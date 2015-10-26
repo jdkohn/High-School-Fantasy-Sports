@@ -24,7 +24,7 @@ echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Bask
 <a>		</a>
 <a href="createleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Create League" /></a>
 <a>		</a>
-<a href="http://www.espn.go.com" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
+<a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 </html>
 
 

@@ -110,19 +110,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       } 
 
      $usr = $_SESSION["username"];
-	 $ssql = "SELECT * FROM users WHERE username='$usr'";
+	   $ssql = "SELECT * FROM users WHERE username='$usr'";
 
-		$result = $conn->query($ssql);
+		 $result = $conn->query($ssql);
 
-      if ($result->num_rows > 0) {
+     if ($result->num_rows > 0) {
      // output data of each row
-     while($row = $result->fetch_assoc()) {
+      while($row = $result->fetch_assoc()) {
         $commissioner = $row["id"];
-        echo "$commissioner !<br>";
-     }
-		} else {
+      }
+		 } else {
 		    header( 'Location: login.php');
-		}
+		 }
 
       if($passNeeded) {
       	$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, password)
@@ -139,8 +138,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
 
       $conn->close(); 
-
-      
    }
 }
 
