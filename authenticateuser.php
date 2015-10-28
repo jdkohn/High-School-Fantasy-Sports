@@ -26,6 +26,7 @@ if ($result->num_rows > 0) {
          session_start();
          $_SESSION["firstname"] = $row["firstname"];
          $_SESSION["username"] = $row["username"];
+         $_SESSION["id"] = $row["id"];
          header( 'Location: home.php' ) ;
      }
 } else {
