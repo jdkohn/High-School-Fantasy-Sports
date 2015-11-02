@@ -1,45 +1,14 @@
 <?php
 
 include "header.php";
+include "style.php";
 
 echo "<br><br>";
 
 ?>
 
 <html>
-<style>
 
-.error {
-	color: #FF0000;
-}
-
-p {
-	font-size: 18px;
-	font-family: verdana;
-}
-h1 {
-	font-size: 36px;
-	font-family: verdana;
-}
-
-input.CreateButton {
-width: 120px;
-height: 35px;
-padding: 5px;
-font-weight: bold;
-font-size: 90%;
-background: green;
-color: white;
-cursor: pointer;
-border: 1px solid white;
-
-}
-input.CreateButton:hover {
-color: green;
-background: white;
-border: 1px solid #000033;
-}
-</style>
 
 
 <?php
@@ -94,31 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 	 if($nameSet && $numTeamsSet && $draftDateSet) {
-			$servername = "localhost";
-			$username = "hsfantasyball";
-			$password = "2016";
-			$dbname = "fantasyball";
+	 	include 'createconnection.php';
 
-			// Create connection
-			$conn = new mysqli($servername, $username, $password, $dbname);
-			// Check connection
-			if ($conn->connect_error) {
-					die("Connection failed: " . $conn->connect_error);
-			} 
-
-		 $usr = $_SESSION["username"];
-		 $ssql = "SELECT * FROM users WHERE username='$usr'";
-
-		 $result = $conn->query($ssql);
-
-		 if ($result->num_rows > 0) {
-		 // output data of each row
-			while($row = $result->fetch_assoc()) {
-				$commissioner = $row["id"];
-			}
-		 } else {
-				//header( 'Location: login.php');
-		 }
+				$commissioner = $_SESSION["id"];
 
 			if($passNeeded) {
 				$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, password)

@@ -2,28 +2,39 @@
 
 session_start();
 
-$servername = "localhost";
-$username = "hsfantasyball";
-$password = "2016";
-$dbname = "fantasyball";
-
-      // Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-      // Check connection
-if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
-} 
+include 'createconnection.php';
 
 $owner = $_SESSION["id"];
 $teamname = "Team " . $_SESSION["firstname"];
 $leaguenum = $_POST["leaguenum"];
+$password = $_POST["password"];
+$addteam = "";
 
-$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+if($password == "9q4fd6bppl04s") {
+
+	$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+
+} else {
+	$sql = "SELECT * FROM leagues WHERE id='$leaguenum'";
+
+	$result = $conn->query($sql);
+
+	if ($result->num_rows > 0) {
+		 // output data of each row
+		while($row = $result->fetch_assoc()) {
+			if($password == $row["password"]) {
+				$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+			} else {
+				break;
+			}
+		}
+	}
+}
 
 if ($conn->query($addteam) == TRUE) {
-    header( 'Location: home.php' );
+	echo '<script type="text/javascript">alert("Your team has been added!");</script>';
 } else {
 	echo "Error: " . $addteam . "<br>" . $conn->error;
 }
-
+$conn->close();
 ?>

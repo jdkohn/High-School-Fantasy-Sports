@@ -1,54 +1,43 @@
 <?php
 
 include "header.php";
+include "style.php";
 
 echo "<br><br>";
 
 ?>
 
-<style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 5px;
-}
-
-input.joinButton {
-  width: 80px;
-  height: 30px;
-  padding: 5px;
-  font-weight: bold;
-  font-size: 90%;
-  background: blue;
-  color: white;
-  cursor: pointer;
-  border: 1px solid white;
-} 
-input.joinButton:hover {
-  color: blue;
-  background: white;
-  border: 1px solid blue;
-}
-
-</style>
-
 <html>
 
- 
-<script>
-function addteam($leaguenum) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && xhttp.status == 200) {
 
+<script>
+function addteam($leaguenum, $noPass) {
+  if($noPass == "1") {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+      }
     }
+    xhttp.open("POST", "addteam.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("leaguenum=" + $leaguenum + "&password=9q4fd6bppl04s");
+  } else {
+    var password = prompt("Please enter the league password", "");
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+      }
+    }
+    xhttp.open("POST", "addteam.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("leaguenum=" + $leaguenum + "&password=" + password);
   }
-  xhttp.open("POST", "addteam.php", true);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send("leaguenum=" + $leaguenum);
+
+  document.location.href="myteams.php";
 }
+
+
+
 </script>
 
 <table style="width:100%">
@@ -61,17 +50,7 @@ function addteam($leaguenum) {
   </tr>
 
   <?php 
-  $servername = "localhost";
-  $username = "hsfantasyball";
-  $password = "2016";
-  $dbname = "fantasyball";
-
-      // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
-      // Check connection
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-  } 
+  include "createconnection.php";
 
 
   foreach ( $conn->query("SELECT * FROM leagues") as $row ) {
@@ -81,33 +60,22 @@ function addteam($leaguenum) {
     if($result->num_rows <= $row["numteams"]) {
       ?>
       <tr>
-        <th><?php echo $row["leaguename"]; ?></th>
-        <th><?php echo $result->num_rows . "/" . $row["numteams"]; ?></th>
-        <th><?php echo $row["draftdate"]; ?></th>
-        <th><?php if(is_null($row["password"])) { echo "Public"; } else { echo "Private"; } ?></th>
-        <th>
-            <input class="joinButton" type="button" value="Join" onclick="addteam(<?php echo $row["id"]; ?>)" />
-          </th>
+        <td><?php echo $row["leaguename"]; ?></td>
+        <td><?php echo $result->num_rows . "/" . $row["numteams"]; ?></td>
+        <td><?php echo $row["draftdate"]; ?></td>
+        <td><?php if(is_null($row["password"])) { echo "Public"; } else { echo "Private"; } ?></td>
+        <td>
+          <div align="center">
+          <input class="joinButton" type="button" value="Join" onclick="addteam(<?php echo $row["id"]; ?>, <?php if(is_null($row["password"])) { echo "1"; } else { echo "0"; } ?>)" />
+        </div>
+        </td>
       </tr>
       <?php
     }
   }  
 
-function joinLeague($leaguenum) {
-  $owner = $_SESSION["id"];
-  $teamname = "Team " . $_SESSION["firstname"];
-
-  $addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
-
-      if ($conn->query($addteam) == TRUE) {
-          //header( 'Location: home.php' );
-      } else {
-          echo "Error: " . $addteam . "<br>" . $conn->error;
-      }
-}
-
-$conn->close(); 
-?>
+  $conn->close(); 
+  ?>
 
 </table>
 </html>

@@ -1,40 +1,12 @@
 <?php
 
+include "style.php";
+
 echo "Create Account";
 
 ?>
 
-<style>
 
-.error {
-  color: #FF0000;
-}
-
-form.blocktext {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-input.Submit {
-width: 50px;
-padding: 5px;
-font-weight: bold;
-font-size: 75%;
-background: white;
-color: black;
-cursor: pointer;
-border: 1px solid #999999;
-border-radius: 10px;
-}
-input.Submit:hover {
-color: white;
-background: black;
-border: 1px solid #000033;
-}
-
-</style>
 
 <?php
 // define variables and set to empty values

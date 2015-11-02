@@ -1,5 +1,6 @@
 <?php
 
+include "style.php";
 
 session_start();
 
@@ -18,7 +19,7 @@ echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Bask
 <br><br>
 <a href="home.php" class="HeaderButtons"><input class="HeaderButtons" type="submit" value="Home" /></a>
 <a>		</a>
-<a href="http://www.espn.go.com" class="HeaderButtons"><input class="HeaderButtons" type="submit" value = "My Teams" /></a>
+<a href="myteams.php" class="HeaderButtons"><input class="HeaderButtons" type="submit" value = "My Teams" /></a>
 <a>		</a>
 <a href="http://www.espn.go.com" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "My Leagues" /></a>
 <a>		</a>
@@ -27,23 +28,3 @@ echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Bask
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 </html>
 
-
-<style>
-input.HeaderButtons {
-width: 120px;
-height: 35px;
-padding: 5px;
-font-weight: bold;
-font-size: 90%;
-background: white;
-color: black;
-cursor: pointer;
-border: 1px solid #999999;
-
-}
-input.HeaderButtons:hover {
-color: white;
-background: black;
-border: 1px solid #000033;
-}
-</style>
