@@ -44,12 +44,6 @@ border: 1px solid #000033;
   color: #FF0000;
 }
 
-form.blocktext {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
-}
 
 input.Submit {
 width: 50px;
@@ -112,6 +106,14 @@ th  {
   padding: 5px;
   background-color: blue;
   color: white;
+}
+
+
+form.blocktext {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 </style>
