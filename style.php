@@ -2,6 +2,19 @@
 ?>
 <style>
 
+
+#panel, #flip {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#panel {
+    padding: 50px;
+    display: none;
+}
+
 input.joinButton {
   width: 80px;
   height: 30px;
@@ -114,6 +127,24 @@ form.blocktext {
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
+}
+
+input.TeamButtons {
+width: 100px;
+height: 30px;
+padding: 5px;
+font-weight: bold;
+font-size: 90%;
+background: black;
+color: white;
+cursor: pointer;
+border: 1px solid black;
+
+}
+input.TeamButtons:hover {
+color: black;
+background: white;
+border: 1px solid black;
 }
 
 </style>

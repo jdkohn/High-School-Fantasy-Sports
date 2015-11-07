@@ -36,7 +36,6 @@ echo "<br><br>";
 <script type="text/javascript" >(function(d){var mp = d.createElement('script'),h=d.getElementsByTagName('head')[0];mp.type='text/javascript';mp.async=true;mp.src='http://www.maxpreps.com/includes/js/widget/widget.compressed.js';h.appendChild(mp);})(document);</script>
 <a class="maxpreps-widget-link" data-link-color="Black" data-width="400" data-height="300" data-item-count="5" data-type="wall" data-include-header="true" data-member-id="8505cebe-adfb-4fd7-892b-efb224882113" data-allow-scrollbar="true" href="http://www.maxpreps.com/local/team/home.aspx?gendersport=boys,basketball&schoolid=06a8878c-8508-43ac-be2a-32d580f5efc1" >Franklin High School Boys Basketball Team Info</a>
 
-
 <script type="text/javascript" >(function(d){var mp = d.createElement('script'),h=d.getElementsByTagName('head')[0];mp.type='text/javascript';mp.async=true;mp.src='http://www.maxpreps.com/includes/js/widget/widget.compressed.js';h.appendChild(mp);})(document);</script>
 <a class="maxpreps-widget-link" data-link-color="DarkBlue" data-width="400" data-height="300" data-item-count="5" data-type="wall" data-include-header="true" data-member-id="8505cebe-adfb-4fd7-892b-efb224882113" data-allow-scrollbar="true" href="http://www.maxpreps.com/local/team/home.aspx?gendersport=boys,basketball&schoolid=937396f4-c9d0-4a28-872f-398edded91e3" >Bainbridge High School Boys Basketball Team Info</a>
 
@@ -55,7 +54,6 @@ echo "<br><br>";
 
 <script type="text/javascript" >(function(d){var mp = d.createElement('script'),h=d.getElementsByTagName('head')[0];mp.type='text/javascript';mp.async=true;mp.src='http://www.maxpreps.com/includes/js/widget/widget.compressed.js';h.appendChild(mp);})(document);</script>
 <a class="maxpreps-widget-link" data-link-color="Green" data-width="400" data-height="300" data-item-count="5" data-type="wall" data-include-header="true" data-member-id="8505cebe-adfb-4fd7-892b-efb224882113" data-allow-scrollbar="true" href="http://www.maxpreps.com/local/team/home.aspx?gendersport=boys,basketball&schoolid=2da9cf05-fcc8-4a04-abed-e3bc2a44a8c4" >Roosevelt High School Boys Basketball Team Info</a>
-
 
 <script type="text/javascript" >(function(d){var mp = d.createElement('script'),h=d.getElementsByTagName('head')[0];mp.type='text/javascript';mp.async=true;mp.src='http://www.maxpreps.com/includes/js/widget/widget.compressed.js';h.appendChild(mp);})(document);</script>
 <a class="maxpreps-widget-link" data-link-color="Blue" data-width="400" data-height="300" data-item-count="5" data-type="wall" data-include-header="true" data-member-id="8505cebe-adfb-4fd7-892b-efb224882113" data-allow-scrollbar="true" href="http://www.maxpreps.com/local/team/home.aspx?gendersport=boys,basketball&schoolid=5471a961-1481-42d9-a9d7-eccbef68f5b4" >Ingraham High School Boys Basketball Team Info</a>

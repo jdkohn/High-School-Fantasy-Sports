@@ -11,7 +11,7 @@ include "style.php";
   <a href ="http://www.espn.go.com">Forgot Password</a><br>
 </form>  
 
-<form class="blocktext" action="authenticateuser.php" method="post">
+<form float="center" action="authenticateuser.php" method="post">
   Username:<br>
   <input type="text" name="username">
   <br>
