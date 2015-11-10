@@ -147,6 +147,25 @@ background: white;
 border: 1px solid black;
 }
 
+input.TeamSettingsButton {
+width: 100px;
+height: 30px;
+padding: 5px;
+font-weight: bold;
+font-size: 90%;
+background: wheat;
+color: black;
+cursor: pointer;
+border: 1px solid wheat;
+
+}
+input.TeamSettingsButton:hover {
+color: black;
+background: whitesmoke;
+border: 1px solid wheat;
+}
+
 </style>
 
-
+<?php
+?>

@@ -4,6 +4,7 @@ include "style.php";
 
 echo "<font color='blue'>LAMP DAILY</font>";
 
+echo phpinfo();
 
 ?>
 
