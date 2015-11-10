@@ -126,6 +126,29 @@ function settingsDiv() {
 };
 
 
+function addplayer($playerID, $currNumPlayers) {
+		
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+			}
+		}
+
+		xhttp.open("POST", "addplayer.php", true);
+
+
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?>);
+
+	var team = document.getElementById('team');
+	var players = document.getElementById('players');
+	team.style.display = 'block';
+	players.style.display = 'none';
+}
+
+
+
 
 </script>
 
@@ -167,17 +190,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div id="team" style="display: none">
 
-<table>
-	<tr>
-		<th>Position</th>
-		<th>Player</th>
-		<th>School</th>
-		<th>PPG</th>
-		<th>RPG</th>
-		<th>APG</th>
-	</tr>
+	<table>
+		<tr>
+			<th>Position</th>
+			<th>Player</th>
+			<th>School</th>
+			<th>PPG</th>
+			<th>RPG</th>
+			<th>APG</th>
+		</tr>
 		<?php
 		$counter = 0; 
+		$totalPlayers = 0;
 		foreach($conn->query("SELECT * FROM joint where team='$teamnum' AND currentPos='G'") as $current) {
 			$id = $current["player"];
 			$counter++;
@@ -194,19 +218,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<?php
 			}
 		}
-			while($counter < 2) {
-				?>
-				<tr>
-					<td>G</td>
-					<td>--</td>
-					<td>--</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-				<?php
-				$counter++;
-			}
+		while($counter < 2) {
+			?>
+			<tr>
+				<td>G</td>
+				<td>--</td>
+				<td>--</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<?php
+			$counter++;
+		}
 
 		foreach($conn->query("SELECT * FROM joint where team='$teamnum' AND currentPos='F'") as $current) {
 			$id = $current["player"];
@@ -225,19 +249,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			}
 
 		}
-					while($counter < 4) {
-				?>
-				<tr>
-					<td>F</td>
-					<td>--</td>
-					<td>--</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-				<?php
-				$counter++;
-			}
+		while($counter < 4) {
+			?>
+			<tr>
+				<td>F</td>
+				<td>--</td>
+				<td>--</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<?php
+			$counter++;
+		}
 
 		foreach($conn->query("SELECT * FROM joint where team='$teamnum' AND currentPos='X'") as $current) {
 			$id = $current["player"];
@@ -257,19 +281,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		}
 
-			while($counter < 5) {
-				?>
-				<tr>
-					<td>FLEX</td>
-					<td>--</td>
-					<td>--</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-				<?php
-				$counter++;
-			}
+		while($counter < 5) {
+			?>
+			<tr>
+				<td>FLEX</td>
+				<td>--</td>
+				<td>--</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<?php
+			$counter++;
+		}
 		foreach($conn->query("SELECT * FROM joint where team='$teamnum' AND currentPos='B'") as $current) {
 			$id = $current["player"];
 			$counter++;
@@ -288,19 +312,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		}
 
-			while($counter < 7) {
-				?>
-				<tr>
-					<td>BENCH</td>
-					<td>--</td>
-					<td>--</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-				<?php
-				$counter++;
-			}
+		while($counter < 7) {
+			?>
+			<tr>
+				<td>BENCH</td>
+				<td>--</td>
+				<td>--</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<?php
+			$counter++;
+		}
 
 		?>
 
@@ -311,13 +335,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div id="players" style="display: none">
 
-<table>
-	<tr>
-		<th>Player Name</th>
-		<th>School</th>
-		<th>Position</th>
-		<th>Add</th>
-	</tr>
+	<table>
+		<tr>
+			<th>Player Name</th>
+			<th>School</th>
+			<th>Position</th>
+			<th>Add</th>
+		</tr>
 		<?php
 		foreach($conn->query("SELECT * FROM joint where team='0' AND league=$leaguenum") as $current) {
 			$id = $current["player"];
@@ -327,14 +351,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<td><?php echo $player["name"]; ?></td>
 					<td><?php echo $player["school"]; ?></td>
 					<td><?php echo $player["position"]; ?></td>
-				</tr>
-				<?php
-			}
-
+					<td><input type="button" value="+" onclick="addplayer(<?php echo $player['id']; ?>, <?php echo $teamplayers; ?>)" />
+				</td>
+			</tr>
+			<?php
 		}
-		?>
 
-	</table>
+	}
+	?>
+
+</table>
 </div>
 
 <div id="standings" style="display: none">Standings</div>
