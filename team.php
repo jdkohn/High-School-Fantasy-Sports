@@ -125,6 +125,19 @@ function settingsDiv() {
 
 };
 
+function update_content(){
+    $.ajax({
+      type: "GET",
+      url: "team.php?id=<?php echo '$team'; ?>", // post it back to itself - use relative path or consistent www. or non-www. to avoid cross domain security issues
+      cache: false, // be sure not to cache results
+    })
+      .done(function( page_html ) {
+    var newDoc = document.open("text/html", "replace");
+    newDoc.write(page_html);
+    newDoc.close();
+    });   
+}
+
 
 function addplayer($playerID, $currNumPlayers) {
 		
@@ -133,13 +146,12 @@ function addplayer($playerID, $currNumPlayers) {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 			}
 		}
-
 		xhttp.open("POST", "addplayer.php", true);
-
-
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
 		xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?>);
+
+	update_content();
+	update_content();
 
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
@@ -147,7 +159,42 @@ function addplayer($playerID, $currNumPlayers) {
 	players.style.display = 'none';
 }
 
+function moveplayer($currPos, $player, $pos) {
+	if($pos == 'G') {
+	var ghere = document.getElementById('ghere');
+	var gblank = document.getElementById('gblank');
+	ghere.style.display = 'block';
+	gblank.style.display = 'none';
+	} else {
+	var fhere = document.getElementById('fhere');
+	var fblank = document.getElementById('fblank');
+	fhere.style.display = 'block';
+	fblank.style.display = 'none';
+	}
 
+	
+
+	if (typeof(Storage) !== "undefined") {
+    // Store
+    localStorage.setItem("currentPlayer", $player);
+} 
+}
+
+function finalizeMove($moveTo) {
+		var $playerID = localStorage.getItem("currentPlayer");
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+			}
+		}
+		xhttp.open("POST", "moveplayer.php", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("player=" + $playerID + "&newpos=" + $moveTo + "&league=" + <?php echo "$leaguenum"; ?>);
+
+		update_content();
+		update_content();
+
+}
 
 
 </script>
@@ -188,7 +235,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <element id="league" style="display: none">This is the League Page :)</element>
 
-<div id="team" style="display: none">
+<div id="team" >
 
 	<table>
 		<tr>
@@ -198,6 +245,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<th>PPG</th>
 			<th>RPG</th>
 			<th>APG</th>
+			<th>Action</th>
 		</tr>
 		<?php
 		$counter = 0; 
@@ -214,6 +262,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
+					<td><input type="button" id="gmove" value="Move" />
+						<input type="button" id="ghere" value="Here" style="display: none" onclick="finalizeMove(<?php echo $counter; ?>)" />
+					</td>
 				</tr>
 				<?php
 			}
@@ -227,6 +278,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
+				<td><div id="gblank">--</div>
+				<input type="button" id="ghere" value="Here" style="display: none" onclick="finalizeMove(<?php echo $counter; ?>)" />
+			</td>
 			</tr>
 			<?php
 			$counter++;
@@ -244,6 +298,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
+					<td><input type="button" id="fmove" value="Move"/>
+					<input type="button" id="fhere" value="Here" style="display: none" onclick="finalizeMove(<?php echo $counter; ?>)" />
+				</td>
 				</tr>
 				<?php
 			}
@@ -258,6 +315,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
+				<td><div id="fblank">--</div>
+				<input type="button" id="fhere" value="Here" style="display: none" onclick="finalizeMove(<?php echo $counter; ?>)" />
+			</td>
 			</tr>
 			<?php
 			$counter++;
@@ -275,6 +335,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
+					<td><input type="button" id="xmove" value="Move" /></td>
 				</tr>
 				<?php
 			}
@@ -290,6 +351,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
+				<td>--</td>
 			</tr>
 			<?php
 			$counter++;
@@ -306,6 +368,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
+					<td><input type="button" id="bmove" value="Move" onclick="moveplayer('B',<?php echo $id; ?>, '<?php echo $player['position']; ?>')" /></td>
 				</tr>
 				<?php
 			}
@@ -321,6 +384,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
+				<td>--</td>
 			</tr>
 			<?php
 			$counter++;
@@ -329,8 +393,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		?>
 
 	</table>
-
-
 </div>
 
 <div id="players" style="display: none">
