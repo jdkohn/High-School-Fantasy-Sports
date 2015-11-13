@@ -165,6 +165,41 @@ background: whitesmoke;
 border: 1px solid wheat;
 }
 
+input.MoveButton {
+  width: 80px;
+  height: 30px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 90%;
+  background: lightgray;
+  color: black;
+  cursor: pointer;
+  border: 1px solid black;
+}
+input.MoveButton:hover {
+  color: green;
+  background: white;
+  border: 1px solid lightgray;
+}
+
+input.HereButton {
+  width: 80px;
+  height: 30px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 90%;
+  background: #00CD00;
+  color: white;
+  cursor: pointer;
+  border: 1px solid #00CD00;
+
+}
+input.HereButton:hover {
+  color: green;
+  background: white;
+  border: 1px solid #00CD00;
+}
+
 </style>
 
 <?php
