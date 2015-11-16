@@ -16,6 +16,25 @@ $teamnum=$team["id"];
 
 
 ?>
+
+<script>
+function finalizeMove($moveTo) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+		}
+	}
+	xhttp.open("POST", "draftplayer.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("player=" + $playerID + "&teams=" + <?php echo "$teamnum"; ?> + "&league=" + <?php echo "$leaguenum"; ?>);
+
+	update_content();
+	update_content();
+
+}
+</script>
+
+
 	<table>
 		<tr>
 			<th>Player Name</th>
@@ -32,7 +51,7 @@ $teamnum=$team["id"];
 					<td><?php echo $player["name"]; ?></td>
 					<td><?php echo $player["school"]; ?></td>
 					<td><?php echo $player["position"]; ?></td>
-					<td><input type="button" value="Draft" />
+					<td><input type="button" value="Draft" onclick="" />
 					</td>
 				</tr>
 				<?php

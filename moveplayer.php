@@ -107,14 +107,6 @@ if($newpos == 0) {
 
 
 
-// $moveplayer = "UPDATE joint SET currentPos = 'G' WHERE joint.league='$league' AND joint.player='$player'";
-
-// if ($conn->query($moveplayer) == TRUE) {
-// 	} else {
-// 		echo "Error: " . $sql . "<br>" . $conn->error;
-// 	}
-
-
 $conn->close();
 
 ?>
