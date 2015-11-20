@@ -1,5 +1,7 @@
 <?php
 ?>
+
+<html>
 <style>
 
 
@@ -199,8 +201,5 @@ input.HereButton:hover {
   background: white;
   border: 1px solid #00CD00;
 }
-
 </style>
-
-<?php
-?>
+</html>

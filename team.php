@@ -26,6 +26,8 @@ foreach($conn->query("SELECT * FROM joint where team='$team[id]'") as $dumb) {
 echo "<br>";
 
 
+$week = 1;
+
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -36,6 +38,7 @@ function leagueDiv() {
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 	league.style.display = 'block';
@@ -43,7 +46,9 @@ function leagueDiv() {
 	players.style.display = 'none';
 	standings.style.display = 'none';
 	schedule.style.display = 'none';
+	scoreboard.style.display = 'none';
 	settings.style.display = 'none';
+
 };
 
 function teamDiv() {
@@ -51,12 +56,14 @@ function teamDiv() {
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 	league.style.display = 'none';
 	team.style.display = 'block';
 	players.style.display = 'none';
 	standings.style.display = 'none';
+	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
 };
@@ -66,12 +73,14 @@ function playersDiv() {
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 	league.style.display = 'none';
 	team.style.display = 'none';
 	players.style.display = 'block';
 	standings.style.display = 'none';
+	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
 };
@@ -81,27 +90,51 @@ function standingsDiv() {
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 	league.style.display = 'none';
 	team.style.display = 'none';
 	players.style.display = 'none';
 	standings.style.display = 'block';
+	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
 };
+
+function scoreboardDiv() {
+	var league = document.getElementById('league');
+	var team = document.getElementById('team');
+	var players = document.getElementById('players');
+	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
+	var schedule = document.getElementById('schedule');
+	var settings = document.getElementById('settings');
+
+	league.style.display = 'none';
+	team.style.display = 'none';
+	players.style.display = 'none';
+	standings.style.display = 'none';
+	schedule.style.display = 'none';
+	settings.style.display = 'none';
+
+	
+	scoreboard.style.display = 'block';
+}
 
 function scheduleDiv() {
 	var league = document.getElementById('league');
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 	league.style.display = 'none';
 	team.style.display = 'none';
 	players.style.display = 'none';
 	standings.style.display = 'none';
+	scoreboard.style.display = 'none';
 	schedule.style.display = 'block';
 	settings.style.display = 'none';
 };
@@ -114,6 +147,7 @@ function settingsDiv() {
 	var team = document.getElementById('team');
 	var players = document.getElementById('players');
 	var standings = document.getElementById('standings');
+	var scoreboard = document.getElementById('scoreboard');
 	var schedule = document.getElementById('schedule');
 	var settings = document.getElementById('settings');
 
@@ -121,6 +155,7 @@ function settingsDiv() {
 	team.style.display = 'none';
 	players.style.display = 'none';
 	standings.style.display = 'none';
+	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'block';
 
@@ -140,24 +175,54 @@ function update_content(){
 }
 
 
-function addplayer($playerID, $currNumPlayers) {
+function dropPlayer($playerID) {
+	var $playerToAdd = localStorage.getItem("playerToAdd");
 
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 		}
 	}
-	xhttp.open("POST", "addplayer.php", true);
+	xhttp.open("POST", "dropplayer.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?>);
-
-	update_content();
-	update_content();
+	xhttp.send("player=" + $playerID + "&playerToAdd=" + $playerToAdd + "&league=" + <?php echo $leaguenum; ?> + "&team=" + <?php echo $teamnum; ?>);
 
 	var team = document.getElementById('team');
-	var players = document.getElementById('players');
+	var players = document.getElementById('drop');
 	team.style.display = 'block';
 	players.style.display = 'none';
+
+	update_content();
+	update_content();
+}
+
+function addplayer($playerID, $currNumPlayers) {
+	if($currNumPlayers != 7) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+			}
+		}
+		xhttp.open("POST", "addplayer.php", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?>);
+
+		update_content();
+		update_content();
+
+		var team = document.getElementById('team');
+		var players = document.getElementById('players');
+		team.style.display = 'block';
+		players.style.display = 'none';
+	} else {
+
+		localStorage.setItem("playerToAdd", $playerID);
+
+		var drop = document.getElementById('drop');
+		var players = document.getElementById('players');
+		drop.style.display = 'block';
+		players.style.display = 'none';
+	}
 }
 
 function moveplayer($currPos, $player, $pos, $numg, $numf, $numx, $numb) {
@@ -216,7 +281,7 @@ function moveplayer($currPos, $player, $pos, $numg, $numf, $numx, $numb) {
 	}
 
 
-if($numf == 0) {
+	if($numf == 0) {
 		fhereo1.style.display = 'none';
 		fblank1.style.display = 'block';
 	} else if($numf == 1) {
@@ -299,6 +364,10 @@ function finalizeMove($moveTo) {
 
 }
 
+function draft() {
+	location.href = "draft.php?team=<?php echo $teamnum; ?>";
+}
+
 
 </script>
 
@@ -311,6 +380,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	$changename = "UPDATE teams SET name='$newname' WHERE id='$teamnum'";
 	if ($conn->query($changename) == TRUE) {
+		?>
+		<script type="text/javascript">
+		update_content();
+		</script>
+		<?php
+
 	} else {
 		echo "Error: " . $sql . "<br>" . $conn->error;
 	}
@@ -332,17 +407,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <a>  </a>
 <input class="TeamButtons" type="button" value="Standings" onclick="standingsDiv()" />
 <a>  </a>
+<input class="TeamButtons" type="button" value="Matchup" onclick="scoreboardDiv()" />
+<a>  </a>
 <input class="TeamButtons" type="button" value="Schedule" onclick="scheduleDiv()" />
 <a>  </a>
 <input class="TeamSettingsButton" type="button" value="Settings" onclick="settingsDiv()" />
-
+<a>  </a>
+<input type="submit" value="Draft" id="goToDraft" onclick="draft()" />
 <br>
 
 <element id="league" style="display: none">This is the League Page :)</element>
 
 <div id="team" >
 
-<br>
+	<br>
 
 	<table>
 		<tr>
@@ -627,22 +705,22 @@ if($numflex == 0) {
 	}
 	?>
 
-		<tr id="bslot" style="display: none">
-			<td>BENCH</td>
-			<td>--</td>
-			<td>--</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>
-				<input class="HereButton" type="button" id="bhere" value="Here" onclick="finalizeMove(7)" />
-			</td>
-		</tr>
+	<tr id="bslot" style="display: none">
+		<td>BENCH</td>
+		<td>--</td>
+		<td>--</td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td>
+			<input class="HereButton" type="button" id="bhere" value="Here" onclick="finalizeMove(7)" />
+		</td>
+	</tr>
 </table>
 </div>
 
 <div id="players" style="display: none">
-
+	<br>
 	<table>
 		<tr>
 			<th>Player Name</th>
@@ -659,7 +737,8 @@ if($numflex == 0) {
 					<td><?php echo $player["name"]; ?></td>
 					<td><?php echo $player["school"]; ?></td>
 					<td><?php echo $player["position"]; ?></td>
-					<td><input type="button" value="+" onclick="addplayer(<?php echo $player['id']; ?>, <?php echo $teamplayers; ?>)" />
+					<td>
+						<input type="button" value="+" onclick="addplayer(<?php echo $player['id']; ?>, <?php echo $teamplayers; ?>)" />
 					</td>
 				</tr>
 				<?php
@@ -671,9 +750,498 @@ if($numflex == 0) {
 	</table>
 </div>
 
-<div id="standings" style="display: none">Standings</div>
+<div id="standings" style="display: none">
+	<br>
+	<?php
 
-<div id="schedule" style="display: none">Schedule</div>
+	include "createconnection.php";
+	include "style.php";
+
+	$teamname='';
+	$team = $teamnum;
+	$league = $leaguenum;
+
+	$teams = array();
+
+	foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $uno) {
+		array_push($teams, $uno['id']);
+	}
+
+	$teamresult = array();
+	for($i=0;$i<count($teams);$i++) {
+		$current = $teams[$i];
+
+		$totalwins = 0;
+		foreach($conn->query("SELECT * FROM schedule WHERE team='$current'") as $game) {
+			if($game['result'] == 'W') {
+				$totalwins++;
+			}
+		}
+		array_push($teamresult,(array($current, $totalwins)));
+	}
+
+	$standings = array();
+
+	$numteams = count($teams);
+
+	for($l = 0; $l<$numteams; $l++) {
+
+		$greatest = $teamresult[0][1];
+
+		$greatestteamnum = $teamresult[0][0];
+
+		if(count($teamresult) != 1) {
+			for($i = 1; $i<count($teams); $i++) {
+
+				if($teamresult[$i][1] > $greatest) {
+					$greatest = $teamresult[$i][1];
+					$greatestteamnum = $teamresult[$i][0];
+				}
+			}
+		}
+
+
+		array_push($standings, $greatestteamnum);
+
+
+		$cop = array();
+		if(count($teamresult) != 1) {
+			for($q=0; $q<count($teams); $q++) {
+				if($q != $greatest) {
+					array_push($cop, $teamresult[$q]);
+				}
+			}
+		}
+
+
+		$teamresult = array();
+
+		for($q=0; $q<count($cop); $q++) {
+			array_push($teamresult, $cop[$q]);
+		}
+	}
+	?>
+
+	<table>
+		<tr>
+			<th>Team Name</th>
+			<th>Wins</th>
+			<th>Losses</th>
+		</tr>
+		<?php
+		for($i=0;$i<count($standings);$i++) {
+			$currentteam = $standings[$i];
+			$numwins = 0;
+			$numlosses = 0;
+			$name = '';
+			foreach($conn->query("SELECT * FROM schedule WHERE team='$currentteam'") as $game) {
+				if($game['result'] == 'W') {
+					$numwins++;
+				}
+				if($game['result'] == 'L') {
+					$numlosses++;
+				}
+			}
+			foreach($conn->query("SELECT * FROM teams WHERE id='$currentteam'") as $curr) {
+				$name = $curr['name'];
+			}
+			?>
+			<tr>
+				<td><?php echo $name; ?></td>
+				<td><?php echo $numwins; ?></td>
+				<td><?php echo $numlosses; ?></td>
+			</tr>
+			<?php
+		}
+		?>
+	</table>
+
+</div>
+
+<div id="scoreboard" style="display:none">
+	<br>
+	<?php
+	foreach($conn->query("SELECT * FROM schedule WHERE team='$teamnum' AND week='$week'") as $currentGame) {
+		$otherteam= $currentGame['opponent'];
+	}
+
+	foreach($conn->query("SELECT * FROM teams WHERE id='$otherteam'") as $opp) {
+		$otherteamname = $opp['name'];
+	}
+
+	foreach($conn->query("SELECT * FROM teams WHERE id='$teamnum'") as $opp) {
+		$teamname = $opp['name'];
+	}
+
+
+
+
+	?>
+
+	<table width="100%">
+
+		<tr>
+			<th>Team</th>
+			<th>Sunday</th>
+			<th>Monday</th>
+			<th>Tuesday</th>
+			<th>Wednesday</th>
+			<th>Thursday</th>
+			<th>Friday</th>
+			<th>Saturday</th>
+		</tr>
+
+		<tr>
+			<td><?php echo $teamname; ?></td>
+			<?php
+			for($i=1; $i<=7; $i++) {
+				?>
+				<td>
+					<?php
+					$day = ($i + 7 * $week);
+					$points = 0;
+					foreach($conn->query("SELECT * FROM teamstats WHERE day='$day' AND team='$teamnum'") as $dailyscore) {
+						$points = $dailyscore['total'];
+					}
+					echo $points;
+					?>
+				</td>
+				<?php
+			}
+			?>
+		</tr>
+		<tr>
+			<td><?php echo $otherteamname; ?></td>
+			<?php
+			for($i=1; $i<=7; $i++) {
+				?>
+				<td>
+					<?php
+					$day = ($i + 7 * $week);
+					$points = 0;
+					foreach($conn->query("SELECT * FROM teamstats WHERE day='$day' AND team='$otherteam'") as $dailyscore) {
+						$points = $dailyscore['total'];
+					}
+					echo $points;
+					?>
+				</td>
+				<?php
+			}
+			?>
+		</tr>
+	</table>
+
+	<br><br>
+
+	<table width="48%" style="float: left;">
+		<tr>
+			<th colspan="3"><?php echo $teamname; ?></th>
+		</tr>
+		<tr>
+			<th>Position</th>
+			<th>Player</th>
+			<th>Points</th>
+		</tr>
+
+		<?php
+		for($i=0; $i<3; $i++) {
+			if($i==0) {
+				$sql = "SELECT * FROM joint WHERE team='$teamnum' and currentPos='G'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>G</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<tr>
+						<td>G</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum' and currentPos='G'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>G</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<tr>
+								<td>G</td>
+								<td> -- </td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				} else {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum' and currentPos='G'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>G</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+			if($i==1) {
+				$sql = "SELECT * FROM joint WHERE team='$teamnum' and currentPos='F'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>F</td>
+						<td>--</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>F</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum' and currentPos='F'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>F</td>
+								<td><?php echo $player['name']; ?></td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<td>F</td>
+								<td>--</td>
+								<td>0</td>
+							</tr>
+							<?php
+						}
+					}
+				} else {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum' and currentPos='F'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>F</td>
+								<td><?php echo $player['name']; ?></td>
+								<td>0</td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+			if($i==2) {
+				$sql = "SELECT * FROM joint WHERE team='$teamnum' and currentPos='X'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>X</td>
+						<td>--</td>
+						<td>0</td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum' and currentPos='X'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>X</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+		}
+
+		?>
+	</table>
+
+	<table width="48%" style="float: left; margin-left: 4%;">
+		<tr>
+			<th colspan="3"><?php echo $otherteamname; ?></th>
+		</tr>
+		<tr>
+			<th>Position</th>
+			<th>Player</th>
+			<th>Points</th>
+		</tr>
+
+		<?php
+		for($i=0; $i<3; $i++) {
+			if($i==0) {
+				$sql = "SELECT * FROM joint WHERE team='$otherteam' and currentPos='G'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>G</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<tr>
+						<td>G</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$otherteam' and currentPos='G'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>G</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<tr>
+								<td>G</td>
+								<td> -- </td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				} else {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$otherteam' and currentPos='G'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>G</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+			if($i==1) {
+				$sql = "SELECT * FROM joint WHERE team='$otherteam' and currentPos='F'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>F</td>
+						<td>--</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>F</td>
+						<td> -- </td>
+						<td> 0 </td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$otherteam' and currentPos='F'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>F</td>
+								<td><?php echo $player['name']; ?></td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<td>F</td>
+								<td>--</td>
+								<td>0</td>
+							</tr>
+							<?php
+						}
+					}
+				} else {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$otherteam' and currentPos='F'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>F</td>
+								<td><?php echo $player['name']; ?></td>
+								<td>0</td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+			if($i==2) {
+				$sql = "SELECT * FROM joint WHERE team='$otherteam' and currentPos='X'";
+				$result = $conn->query($sql);
+				if(mysqli_num_rows($result) == 0) {
+					?>
+					<tr>
+						<td>X</td>
+						<td>--</td>
+						<td>0</td>
+					</tr>
+					<?php
+				} else if(mysqli_num_rows($result) == 1) {
+					foreach($conn->query("SELECT * FROM joint WHERE team='$otherteam' and currentPos='X'") as $g) {
+						$pnum=$g['player'];
+						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
+							?>
+							<tr>
+								<td>X</td>
+								<td><?php echo $player['name']; ?></td>
+								<td> 0 </td>
+							</tr>
+							<?php
+						}
+					}
+				}
+			}
+		}
+
+		?>
+	</table>
+</div>
+
+<div id="schedule" style="display: none">
+	<br>
+<table>
+	<tr>
+		<th>Week</th>
+		<th>Opponent</th>
+	</tr>
+<?php
+		foreach($conn->query("SELECT * FROM schedule WHERE team='$teamnum'") as $game) {
+			$gweek = $game['week'];
+			$oppnum = $game['opponent'];
+			$opponent = '';
+			foreach($conn->query("SELECT * FROM teams WHERE id ='$oppnum'") as $opp) {
+				$opponent = $opp['name'];
+			}
+			?>
+			<tr>
+				<td><?php echo $gweek; ?></td>
+				<td><?php echo $opponent; ?></td>
+			</tr>
+<?php
+		}
+
+?>
+</table>
+</div>
 
 <br>
 <div id="settings" style="display: none">
@@ -682,6 +1250,38 @@ if($numflex == 0) {
 		<input type="text" name="teamname" value="<?php echo $team['name']; ?>"  />
 		<input type="submit" value="Change" onclick="teamDiv()" />
 	</form>
+</div>
+
+<div id="drop" style="display: none"> 
+	<table>
+	<tr>
+		<th>Position</th>
+		<th>Player</th>
+		<th>School</th>
+		<th>Drop</th>
+	</tr>
+	<?php
+	foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND team='$teamnum'") as $pj) {
+		$playerid = $pj['player'];
+		foreach($conn->query("SELECT * FROM players WHERE id='$playerid'") as $player) {
+
+			$pos = $player['position'];
+			$name = $player['name'];
+			$school = $player['school'];
+			?>
+
+			<tr>
+				<td><?php echo $pos; ?></td>
+				<td><?php echo $name; ?></td>
+				<td><?php echo $school; ?></td>
+				<td><input type='button' value='DROP' onclick='dropPlayer(<?php echo $playerid; ?>)' /></td>
+			</tr>
+			<?php
+		}
+	}
+
+	?>
+</table>
 </div>
 
 

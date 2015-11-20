@@ -57,11 +57,11 @@ function addteam($leaguenum, $noPass) {
     $leaguenum=$row["id"];
     $sssql = "SELECT * FROM teams WHERE league=$leaguenum";
     $result = $conn->query($sssql);
-    if($result->num_rows <= $row["numteams"]) {
+    if(mysqli_num_rows($result) < $row["numteams"]) {
       ?>
       <tr>
         <td><?php echo $row["leaguename"]; ?></td>
-        <td><?php echo $result->num_rows . "/" . $row["numteams"]; ?></td>
+        <td><?php echo mysqli_num_rows($result) . "/" . $row["numteams"]; ?></td>
         <td><?php echo $row["draftdate"]; ?></td>
         <td><?php if(is_null($row["password"])) { echo "Public"; } else { echo "Private"; } ?></td>
         <td>

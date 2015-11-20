@@ -80,10 +80,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			echo "Error: " . $sql . "<br>" . $conn->error;
 		}
 
+		$leaguenum = -1;
+
+		foreach($conn->query("SELECT * FROM leagues WHERE leaguename='$name' AND numteams = '$numTeams' AND commissioner='$commissioner' AND draftdate = '$draftDate'") as $c) {
+			$leaguenum = $c['id'];
+		}
 
 		foreach ($conn->query("SELECT * FROM players") as $player) {
 			$playerID = $player["id"];
-			$addplayer = "INSERT INTO joint (league, player, currentPos) VALUES ('$leaguenum','$playerID', 'N')";
+			$addplayer = "INSERT INTO joint (league, player, currentPos, team) VALUES ('$leaguenum','$playerID', 'N', 0)";
 			if ($conn->query($addplayer) == TRUE) {
 			} else {
 				echo "Error: " . $sql . "<br>" . $conn->error;
@@ -103,16 +108,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
 
 		if ($conn->query($addteam) == TRUE) {
-			header( 'Location: home.php' );
+			
 		} else {
 			echo "Error: " . $sql . "<br>" . $conn->error;
 		}
 
-
-
-
-
 		$conn->close(); 
+		?>
+		<script>
+			goToTeams();
+			</script>
+<?php
 	}
 }
 
@@ -144,6 +150,12 @@ $(document).ready(function(){
 		}
 	});
 });
+
+
+function goToTeams() {
+	window.location = "myteams.php";
+}
+
 </script>
 
 <h1>Create League</h1>

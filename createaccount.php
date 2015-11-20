@@ -69,6 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           session_start();
           $_SESSION["firstname"] = $firstname;
           $_SESSION["username"] = $usrnme;
+          
+          foreach($conn->query("SELECT * FROM users WHERE username='$usrnme' AND password='$pass'") as $curr) {
+            $_SESSION["id"] = $curr["id"];
+        }
+
           header( 'Location: home.php' );
       } else {
           echo "Error: " . $sql . "<br>" . $conn->error;
