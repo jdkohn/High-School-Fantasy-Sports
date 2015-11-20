@@ -15,7 +15,6 @@ echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Bask
 <html>
 <a href="logout.php" class="HeaderButtons" align="right"><input class="HeaderButtons" align="right" type="button" value="Log Out" /></a>
 
-
 <br><br>
 <a href="home.php" class="HeaderButtons"><input class="HeaderButtons" type="submit" value="Home" /></a>
 <a>		</a>
@@ -24,5 +23,7 @@ echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Bask
 <a href="createleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Create League" /></a>
 <a>		</a>
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
+<a>		</a>
+<a href="news.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "News" /></a>
 </html>
 

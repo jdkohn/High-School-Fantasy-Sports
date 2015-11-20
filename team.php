@@ -11,7 +11,7 @@ foreach ( $conn->query("SELECT * FROM teams where id='$team'") as $row ) {
 	$team = $row;
 
 }
-
+$teamname = $team['name'];
 $leaguenum=$team["league"];
 $teamnum=$team["id"];
 
@@ -49,6 +49,8 @@ function leagueDiv() {
 	scoreboard.style.display = 'none';
 	settings.style.display = 'none';
 
+var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 };
 
 function teamDiv() {
@@ -66,6 +68,8 @@ function teamDiv() {
 	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 };
 
 function playersDiv() {
@@ -83,6 +87,8 @@ function playersDiv() {
 	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 };
 
 function standingsDiv() {
@@ -100,6 +106,8 @@ function standingsDiv() {
 	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 };
 
 function scoreboardDiv() {
@@ -117,9 +125,9 @@ function scoreboardDiv() {
 	standings.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'none';
-
-	
 	scoreboard.style.display = 'block';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 }
 
 function scheduleDiv() {
@@ -137,6 +145,8 @@ function scheduleDiv() {
 	scoreboard.style.display = 'none';
 	schedule.style.display = 'block';
 	settings.style.display = 'none';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 };
 
 
@@ -158,6 +168,8 @@ function settingsDiv() {
 	scoreboard.style.display = 'none';
 	schedule.style.display = 'none';
 	settings.style.display = 'block';
+	var drop = document.getElementById('drop');
+		drop.style.display = 'none';
 
 };
 
@@ -219,8 +231,8 @@ function addplayer($playerID, $currNumPlayers) {
 		localStorage.setItem("playerToAdd", $playerID);
 
 		var drop = document.getElementById('drop');
-		var players = document.getElementById('players');
 		drop.style.display = 'block';
+		var players = document.getElementById('players');
 		players.style.display = 'none';
 	}
 }
@@ -413,7 +425,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <a>  </a>
 <input class="TeamSettingsButton" type="button" value="Settings" onclick="settingsDiv()" />
 <a>  </a>
-<input type="submit" value="Draft" id="goToDraft" onclick="draft()" />
+<input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft()" />
 <br>
 
 <element id="league" style="display: none">This is the League Page :)</element>
@@ -738,7 +750,7 @@ if($numflex == 0) {
 					<td><?php echo $player["school"]; ?></td>
 					<td><?php echo $player["position"]; ?></td>
 					<td>
-						<input type="button" value="+" onclick="addplayer(<?php echo $player['id']; ?>, <?php echo $teamplayers; ?>)" />
+						<input class="addButton" type="button" value="+" onclick="addplayer(<?php echo $player['id']; ?>, <?php echo $teamplayers; ?>)" />
 					</td>
 				</tr>
 				<?php
@@ -1247,7 +1259,10 @@ if($numflex == 0) {
 <div id="settings" style="display: none">
 	<form method="post">
 		Change Team Name:
-		<input type="text" name="teamname" value="<?php echo $team['name']; ?>"  />
+		<?php
+			
+		?>
+		<input type="text" name="teamname" value="<?php echo $teamname; ?>"  />
 		<input type="submit" value="Change" onclick="teamDiv()" />
 	</form>
 </div>
@@ -1274,7 +1289,7 @@ if($numflex == 0) {
 				<td><?php echo $pos; ?></td>
 				<td><?php echo $name; ?></td>
 				<td><?php echo $school; ?></td>
-				<td><input type='button' value='DROP' onclick='dropPlayer(<?php echo $playerid; ?>)' /></td>
+				<td><input class ='dButton' type='button' value='DROP' onclick='dropPlayer(<?php echo $playerid; ?>)' /></td>
 			</tr>
 			<?php
 		}

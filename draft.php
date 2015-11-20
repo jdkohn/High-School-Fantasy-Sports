@@ -6,9 +6,7 @@ include "createconnection.php";
 $team = $_GET["team"];
 
 foreach ( $conn->query("SELECT * FROM teams where id='$team'") as $row ) {
-
 	$team = $row;
-
 }
 
 $leaguenum=$team["league"];
@@ -41,6 +39,9 @@ $result = $conn->query($picks);
 $numpicks=mysqli_num_rows($result);
 
 $ontheclock = $order[$numpicks];
+
+
+
 
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -75,7 +76,7 @@ function draft($playerID) {
 }
 
 function updateEverySecond() {
-    setInterval(update_content(), 5000);
+    setInterval(update_content(), 50000);
 }
 
 
@@ -136,7 +137,7 @@ if($ontheclock == $teamnum) {
 				<td><?php echo $player["school"]; ?></td>
 				<td><?php echo $player["position"]; ?></td>
 				<td>
-					<input type="button" value="Draft" onclick="draft(<?php echo $player['id']; ?>)" />
+					<input class='dButton' type="button" value="Draft" onclick="draft(<?php echo $player['id']; ?>)" />
 				</td>
 			</tr>
 			<?php

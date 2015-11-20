@@ -194,12 +194,45 @@ input.HereButton {
   color: white;
   cursor: pointer;
   border: 1px solid #00CD00;
-
 }
 input.HereButton:hover {
   color: green;
   background: white;
   border: 1px solid #00CD00;
 }
+
+input.dButton {
+  width: 80px;
+  height: 30px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 90%;
+  background: red;
+  color: white;
+  cursor: pointer;
+  border: 1px solid red;
+}
+input.dButton:hover {
+  color: red;
+  background: white;
+  border: 1px solid red;
+}
+input.addButton {
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  font-size: 100%;
+  background: green;
+  color: white;
+  cursor: pointer;
+  border: 1px solid green;
+}
+input.addButton:hover {
+  color: green;
+  background: white;
+  border: 1px solid green;
+}
+
+
 </style>
 </html>
