@@ -28,6 +28,15 @@ echo "<br>";
 
 $week = 1;
 
+$result = $conn->query("SELECT * FROM teams WHERE league='$leaguenum'");
+$numteams = mysqli_num_rows($result);
+
+$drafttime='';
+date_default_timezone_set('America/Los_Angeles');
+foreach($conn->query("SELECT * FROM leagues WHERE id='$leaguenum'") as $lll) {
+	$drafttime = $lll['draftdate'];
+}
+
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -425,10 +434,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <a>  </a>
 <input class="TeamSettingsButton" type="button" value="Settings" onclick="settingsDiv()" />
 <a>  </a>
+<?php
+if((time()+(60*60*1)) > strtotime($drafttime)) {
+?>
 <input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft()" />
 <br>
+<?php
+}
+?>
+<element id="league" style="display: none">
+<br>
+<?php
+$teams = array();
 
-<element id="league" style="display: none">This is the League Page :)</element>
+
+
+$numGames = $numteams / 2;
+
+foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $uno) {
+	array_push($teams, $uno['id']);
+}
+?>
+<table>
+			<tr>
+				<th colspan="2">
+					Games This Week
+				</th>
+			</tr>
+			<tr>
+				<td>Home</td>
+				<td>Away</td>
+			</tr>
+
+<?php
+for($i=0;$i<$numGames; $i++) {
+	$tt = $teams[0];
+	foreach($conn->query("SELECT * FROM schedule WHERE team='$tt' AND week='$week'") as $currentGame) {
+		?>
+			<tr>
+				<?php
+				$hometeamname = '';
+				foreach($conn->query("SELECT * FROM teams WHERE id='$tt'") as $home) {
+					$hometeamname = $home['name'];
+				}
+				$opponent=$currentGame['opponent'];
+				$awayteamname = '';
+				foreach($conn->query("SELECT * FROM teams WHERE id='$opponent'") as $o) {
+					$awayteamname=$o['name'];
+				}
+				for($i=0;$i<count($teams); $i++) {
+					if($teams[$i] == $tt || $teams[$i] == $opponent) {
+						unset($teams[$i]);
+					}
+				}
+				?>
+				<td><?php echo $hometeamname; ?></td>
+				<td><?php echo $awayteamname; ?></td>
+			</tr>
+				<?php
+			}
+		}
+		?>
+</table>
+
+</element>
 
 <div id="team" >
 
@@ -765,9 +834,6 @@ if($numflex == 0) {
 <div id="standings" style="display: none">
 	<br>
 	<?php
-
-	include "createconnection.php";
-	include "style.php";
 
 	$teamname='';
 	$team = $teamnum;

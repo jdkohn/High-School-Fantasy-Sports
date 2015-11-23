@@ -107,17 +107,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
 
-		if ($conn->query($addteam) == TRUE) {
-			
-		} else {
+		if ($conn->query($addteam) == FALSE) {
 			echo "Error: " . $sql . "<br>" . $conn->error;
 		}
 
 		$conn->close(); 
 		?>
 		<script>
-			goToTeams();
-			</script>
+			document.location.href = "myteams.php";
+		</script>
 <?php
 	}
 }
@@ -152,9 +150,6 @@ $(document).ready(function(){
 });
 
 
-function goToTeams() {
-	window.location = "myteams.php";
-}
 
 </script>
 
