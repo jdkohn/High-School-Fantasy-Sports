@@ -10,6 +10,11 @@ if(isset($_SESSION["firstname"])) {
 ?>
 
 <html>
+
+<head>
+<title>Home</title>
+</head>
+
 <a href="logout.php" class="HeaderButtons" align="right"><input class="HeaderButtons" align="right" type="button" value="Log Out" /></a>
 
 
@@ -24,6 +29,13 @@ if(isset($_SESSION["firstname"])) {
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 <a>		</a>
 <a href="news.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "News" /></a>
+
+<br><br>
+<div align="center">
+<h2>iPhone App Coming Soon</h2>
+<br>
+<h2>High School Fantasy Baseball Coming This Spring<h2>
+</div>
 </html>
 
 <?php
@@ -39,6 +51,8 @@ if(isset($_SESSION["firstname"])) {
 	leagues in the country. There are more alumni from the 16 schools in Seattle's Metro League playing in the NBA than
 	there are alumni from New York City's 799 high schools playing in the NBA. Make a league with your friends and draft
 	today!</p>
+
+	
 
 <a href="login.php" class="HeaderButtons"><input class="HeaderButtons" type="submit" value="Login" /></a>
 <a href="createaccount.php" class="HeaderButtons"><input class="HeaderButtons" type="submit" value="Join" /></a>

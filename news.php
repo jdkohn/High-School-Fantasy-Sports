@@ -4,6 +4,10 @@
 
 <html>
 
+<head>
+<title>News</title>
+</head>
+
 <br><br>
 
 <div align="center">

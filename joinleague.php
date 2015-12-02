@@ -9,6 +9,9 @@ echo "<br><br>";
 
 <html>
 
+<head>
+<title>Join League</title>
+</head>
 
 <script>
 function addteam($leaguenum, $noPass) {
@@ -16,6 +19,7 @@ function addteam($leaguenum, $noPass) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
+        document.location.href="myteams.php";
       }
     }
     xhttp.open("POST", "addteam.php", true);
@@ -26,14 +30,13 @@ function addteam($leaguenum, $noPass) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
+        document.location.href="myteams.php";
       }
     }
     xhttp.open("POST", "addteam.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("leaguenum=" + $leaguenum + "&password=" + password);
   }
-
-  document.location.href="myteams.php";
 }
 
 
@@ -55,6 +58,7 @@ function addteam($leaguenum, $noPass) {
 
   foreach ( $conn->query("SELECT * FROM leagues") as $row ) {
     $leaguenum=$row["id"];
+    $leaguenum = mysqli_real_escape_string($conn, $leaguenum);
     $sssql = "SELECT * FROM teams WHERE league=$leaguenum";
     $result = $conn->query($sssql);
     if(mysqli_num_rows($result) < $row["numteams"]) {

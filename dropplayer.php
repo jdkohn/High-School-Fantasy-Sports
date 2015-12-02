@@ -6,6 +6,11 @@ $playerToDrop = $_POST['player'];
 $playerToAdd = $_POST['playerToAdd'];
 $league = $_POST['league'];
 $team = $_POST['team'];
+$playerToDrop = mysqli_real_escape_string($conn, $playerToDrop);
+$playerToAdd = mysqli_real_escape_string($conn, $playerToAdd);
+$league = mysqli_real_escape_string($conn, $league);
+$team = mysqli_real_escape_string($conn, $team);
+
 
 $addPlayer = "UPDATE joint SET team='$team' WHERE joint.player = '$playerToAdd' AND league='$league'";
 $changePos = "UPDATE joint SET currentPos = 'B' WHERE joint.player='$playerToAdd' AND league='$league'";

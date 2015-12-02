@@ -6,15 +6,19 @@ $player = $_POST["player"];
 $league = $_POST["league"];
 $newpos = $_POST["newpos"];
 $currPos = $_POST["currentposition"];
+$player = mysqli_real_escape_string($conn, $player);
+$league = mysqli_real_escape_string($conn, $league);
+$newpos = mysqli_real_escape_string($conn, $newpos);
+$currPos = mysqli_real_escape_string($conn, $currPos);
+
 
 foreach ( $conn->query("SELECT * FROM joint where league='$league' AND player='$player'") as $row ) {
 
 	$team = $row["team"];
-
+	$team = mysqli_real_escape_string($conn, $team);
 }
 
 if($newpos == 0) {
-
 	$q = "SELECT * FROM joint WHERE league='$league' AND team='$team' AND currentPos='G'";
 	$result = $conn->query($q);
 	$rowcount=mysqli_num_rows($result);
@@ -87,8 +91,6 @@ if($newpos == 0) {
 				foreach($conn->query($q) as $curr) {
 				$otherP = $curr["player"];
 				$otherPPos = $curr["position"];
-
-
 				$conn->query("UPDATE joint SET currentPos = 'X' WHERE joint.league='$league' AND joint.player='$player'");
 				if($currPos !== 'B') {
 					if($otherPPos !== $currPos) {

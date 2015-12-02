@@ -1,14 +1,14 @@
-
 <?php
-
 include "style.php";
 
 ?>
 
+<head>
+<title>Login</title>
+</head>
+
 <form class="alignlinks">
   <a href="createaccount.php">Create Account</a> 
-  <a> </a>
-  <a href ="http://www.espn.go.com">Forgot Password</a><br>
 </form>  
 
 <form float="center" action="authenticateuser.php" method="post">

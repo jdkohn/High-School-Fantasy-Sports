@@ -9,7 +9,9 @@ echo "<br><br>";
 
 <html>
 
-
+<head>
+<title>Create League</title>
+</head>
 
 <?php
 // define variables and set to empty values
@@ -66,6 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		include 'createconnection.php';
 
 		$commissioner = $_SESSION["id"];
+
+		$name = mysqli_real_escape_string($conn, $name);
+		$numTeams = mysqli_real_escape_string($conn, $numTeams);
+		$pass = mysqli_real_escape_string($conn, $pass);
 
 		if($passNeeded) {
 			$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, password)

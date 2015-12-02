@@ -1,20 +1,12 @@
 <?php
+include "createconnection.php";
+
 
 $usrusername = $_POST['username'];
 $usrpassword = $_POST['password'];
 
-$servername = "localhost";
-$username = "hsfantasyball";
-$password = "2016";
-$dbname = "fantasyball";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
-
+$usrusername = mysqli_real_escape_string($conn, $usrusername);
+$usrpassword = mysqli_real_escape_string($conn, $usrpassword);
 
 $sql = "SELECT * FROM users WHERE username='$usrusername' AND password='$usrpassword'";
 

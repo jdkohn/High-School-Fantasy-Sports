@@ -10,6 +10,17 @@ if(!isset($_SESSION["username"])) {
 
 echo "Hello, " . $_SESSION["firstname"] . "! Welcome to High School Fantasy Basketball!";
 
+$starttime = 1448755200;
+
+$day = ((int) ((time() - $starttime) / (60*60*24)));
+
+if($day >=0) {
+	$week = ((int) ($day / 7));
+} else {
+	$week = 0;
+	$day = 0;
+}
+
 ?>
 
 <html>

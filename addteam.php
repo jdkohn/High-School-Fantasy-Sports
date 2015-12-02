@@ -10,6 +10,12 @@ $leaguenum = $_POST["leaguenum"];
 $password = $_POST["password"];
 $addteam = "";
 
+$owner = mysqli_real_escape_string($conn, $owner);
+$teamname = mysqli_real_escape_string($conn, $teamname);
+$leaguenum = mysqli_real_escape_string($conn, $leaguenum);
+$password = mysqli_real_escape_string($conn, $password);
+
+
 if($password == "9q4fd6bppl04s") {
 
 	$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
@@ -103,6 +109,8 @@ if($numteams == $capacity) {
 				array_push($myArray, $cop[$q]);
 			}
 
+			$randomteam1 = mysqli_real_escape_string($conn, $randomteam1);
+			$randomteam2 = mysqli_real_escape_string($conn, $randomteam2);
 
 			$one = "INSERT INTO schedule (team, week, opponent) VALUES ('$randomteam1', '$week', '$randomteam2')";
 			$two = "INSERT INTO schedule (team, week, opponent) VALUES ('$randomteam2', '$week', '$randomteam1')";

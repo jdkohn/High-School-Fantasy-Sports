@@ -1,12 +1,16 @@
 <?php
 
 include "style.php";
+include "createconnection.php";
 
 echo "Create Account";
 
 ?>
 
-
+<html>
+<head>
+<title>Create Account</title>
+</head>
 
 <?php
 // define variables and set to empty values
@@ -50,18 +54,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    }
 
    if($firstSet && $lastSet && $emailSet && $usernameSet && $passSet) {
-      $servername = "localhost";
-      $username = "hsfantasyball";
-      $password = "2016";
-      $dbname = "fantasyball";
+      
 
-      // Create connection
-      $conn = new mysqli($servername, $username, $password, $dbname);
-      // Check connection
-      if ($conn->connect_error) {
-          die("Connection failed: " . $conn->connect_error);
-      } 
-
+      $firstname = mysqli_real_escape_string($conn, $firstname);
+      $lastname = mysqli_real_escape_string($conn, $lastname);
+      $email = mysqli_real_escape_string($conn, $email);
+      $usrnme = mysqli_real_escape_string($conn, $usrnme);
+      $pass = mysqli_real_escape_string($conn, $pass);
+      
       $sql = "INSERT INTO users (firstname, lastname, email, username, password)
       VALUES ('$firstname', '$lastname', '$email', '$usrnme', '$pass')";
 
@@ -73,8 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           foreach($conn->query("SELECT * FROM users WHERE username='$usrnme' AND password='$pass'") as $curr) {
             $_SESSION["id"] = $curr["id"];
         }
-
-          header( 'Location: home.php' );
+          ?>
+            <script>
+              window.location = 'home.php';
+            </script>
+          <?php
       } else {
           echo "Error: " . $sql . "<br>" . $conn->error;
       }
@@ -122,6 +125,6 @@ function test_input($data) {
     <input class="Submit" type="submit" value="Go" />
 </form>
 
-
+</html>
 
 

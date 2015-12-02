@@ -1,9 +1,14 @@
 <?php
+include "createconnection.php";
 
 $player = $_POST["player"];
 $team = $_POST["team"];
 $league = $_POST["league"];
 $time = time();
+
+$player = mysqli_real_escape_string($conn, $player);
+$team = mysqli_real_escape_string($conn, $team);
+$league = mysqli_real_escape_string($conn, $league);
 
 include "createconnection.php";
 

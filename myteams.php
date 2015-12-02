@@ -7,6 +7,10 @@ echo "<br><br>";
 ?>
 <html>
 
+<head>
+<title>My Teams</title>
+</head>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script> 
 $(document).ready(function(){
@@ -24,6 +28,7 @@ $(document).ready(function(){
     <th>Team Name</th>
     <th>League Name</th>
     <th>Current Position</th>
+    <th>Draft</th>
   </tr>
 
   <?php 
@@ -37,6 +42,7 @@ $(document).ready(function(){
 
       $teams = array();
 
+      $league = mysqli_real_escape_string($conn, $league);
       foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $uno) {
         array_push($teams, $uno['id']);
       }
@@ -46,6 +52,7 @@ $(document).ready(function(){
         $current = $teams[$i];
 
         $totalwins = 0;
+        $current = mysqli_real_escape_string($conn, $current);
         foreach($conn->query("SELECT * FROM schedule WHERE team='$current'") as $game) {
           if($game['result'] == 'W') {
             $totalwins++;
@@ -106,8 +113,8 @@ $(document).ready(function(){
       <tr>
         <td><a href="team.php?id=<?php echo $row["id"] ?>"> <?php echo $row["name"]; ?></a></td>
         <td><?php echo $f["leaguename"]; ?></td>
-        <td>
-          <?php echo $currentPosition . "/" . $f["numteams"]; ?></td>
+        <td><?php echo $currentPosition . "/" . $f["numteams"]; ?></td>
+        <td><?php echo $f["draftdate"]; ?></td>
         </tr>
         <?php
       }
