@@ -13,6 +13,7 @@ foreach ( $conn->query("SELECT * FROM teams where id='$team'") as $row ) {
 
 $leaguenum=$team["league"];
 $teamnum=$team["id"];
+$commish = 0;
 
 $leaguenum = mysqli_real_escape_string($conn, $leaguenum);
 $teamnum = mysqli_real_escape_string($conn, $teamnum);
@@ -21,6 +22,7 @@ $drafttime='';
 date_default_timezone_set('America/Los_Angeles');
 foreach($conn->query("SELECT * FROM leagues WHERE id='$leaguenum'") as $lll) {
 	$drafttime = $lll['draftdate'];
+	$commish = $lll['commissioner'];
 }
 
 
@@ -132,21 +134,12 @@ function draft($playerID) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			update_content();
-			update_content();
 		}
 	}
 	xhttp.open("POST", "draftplayer.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("player=" + $playerID + "&team=" + <?php echo "$ontheclock"; ?> + "&league=" + <?php echo "$leaguenum"; ?>);
-
-	
+	xhttp.send("player=" + $playerID + "&team=" + <?php echo "$ontheclock"; ?> + "&league=" + <?php echo "$leaguenum"; ?>);	
 }
-
-function updateEverySecond() {
-	setInterval(update_content(), 50000);
-}
-
 
 </script>
 
@@ -214,24 +207,17 @@ if($ontheclock == $teamnum) {
 
 
 
-if($timeLeftOnClock <= 0) {
-		$playersremaining = $totalplayers - $numpicks;
-		$arr = array();
-		for($i=0;$i<$playersremaining;$i++) {
-			array_push($arr, $i);
-		}
-		$randnum=array_rand($arr, 1);
-		$c = 0;
+	if(($timeLeftOnClock <= 0) && ($commish == $_SESSION['id'])) {
 		foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND currentPos='N'") as $prospect) {
-			if($c == $randnum) {
 				?>
 				<script>
 					draft(<?php echo $prospect['player']; ?>);
-				</script>
-				<?php		
+
+				</script>	
+				<?php
+				$ontheclock++;
+				break;
 			}
-			$c++;
-		}
 	}
 
 	?>

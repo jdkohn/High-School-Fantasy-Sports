@@ -8,7 +8,7 @@ echo "<br><br>";
 <html>
 
 <head>
-<title>My Teams</title>
+  <title>My Teams</title>
 </head>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -18,7 +18,6 @@ $(document).ready(function(){
     $("#panel").slideToggle("slow");
   });
 });
-
 
 </script>
 
@@ -32,19 +31,26 @@ $(document).ready(function(){
   </tr>
 
   <?php 
+  $teamnum = 0;
 //Needs work
   foreach ( $conn->query("SELECT * FROM teams where owner='$_SESSION[id]'") as $row ) {
+    $leaguenum = $row['league'];
     foreach ($conn->query("SELECT * FROM leagues where id=$row[league]") as $f ) {
 
       $teamname='';
       $team = $row['id'];
       $league = $row['league'];
 
+      $teamnum = $team;
+
       $teams = array();
+
+      $totalteams = 0;
 
       $league = mysqli_real_escape_string($conn, $league);
       foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $uno) {
         array_push($teams, $uno['id']);
+        $totalteams++;
       }
 
       $teamresult = array();
@@ -63,9 +69,7 @@ $(document).ready(function(){
 
       $standings = array();
 
-      $numteams = count($teams);
-
-      for($l = 0; $l<$numteams; $l++) {
+      for($l = 0; $l<$totalteams; $l++) {
 
         $greatest = $teamresult[0][1];
 
@@ -114,14 +118,44 @@ $(document).ready(function(){
         <td><a href="team.php?id=<?php echo $row["id"] ?>"> <?php echo $row["name"]; ?></a></td>
         <td><?php echo $f["leaguename"]; ?></td>
         <td><?php echo $currentPosition . "/" . $f["numteams"]; ?></td>
-        <td><?php echo $f["draftdate"]; ?></td>
-        </tr>
-        <?php
-      }
+        <td>
+          <?php 
+          $p = $conn->query("SELECT * FROM teams WHERE league = '$leaguenum'");
+          $numteams = mysqli_num_rows($p);
+          date_default_timezone_set('America/Los_Angeles');
+          $drafttime = strtotime($f['draftdate']);
+
+          $result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
+          if(mysqli_num_rows($result) != ($f["numteams"] * 7)) {
+
+            if(((time()+(60*60*1)) > $drafttime) && ($totalteams == $f["numteams"])) {
+              ?>
+              <input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft(<?php echo $teamnum; ?>)" />
+              <br>
+              <?php
+            } else {
+              echo $f["draftdate"];
+            }
+          } else {
+            echo "Drafted!";
+          }
+          ?>
+
+
+        </td>
+      </tr>
+      <?php
     }
+  }
 
-    $conn->close();
+  $conn->close();
 
-    ?>
+  ?>
 
-    </html>
+<script>
+function draft($teamnum) {
+  location.href = "draft.php?team=" + $teamnum;
+}
+</script>
+
+  </html>
