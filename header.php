@@ -1,5 +1,4 @@
 <?php
-
 include "style.php";
 
 session_start();
@@ -36,5 +35,13 @@ if($day >=0) {
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 <a>		</a>
 <a href="news.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "News" /></a>
+<?php 
+if($_SESSION['id'] == 7) {
+?>
+	<a>		</a>
+	<a href="addPlayerStat.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Add Stats" /></a>
+<?php
+}
+?>
 </html>
 

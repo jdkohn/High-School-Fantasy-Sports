@@ -55,10 +55,14 @@ foreach($conn->query("SELECT * FROM leagues WHERE id='$leaguenum'") as $l) {
 	$capacity = $l['numteams'];
 }
 
+$addWeek = FALSE;
+$subtractWeek = FALSE;
+
+
 ?>
 
 <head>
-<title><?php echo $teamname; ?></title>
+	<title><?php echo $teamname; ?></title>
 </head>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -236,8 +240,6 @@ function dropPlayer($playerID) {
 	xhttp.open("POST", "dropplayer.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("player=" + $playerID + "&playerToAdd=" + $playerToAdd + "&league=" + <?php echo $leaguenum; ?> + "&team=" + <?php echo $teamnum; ?>);
-
-	
 }
 
 function addplayer($playerID, $currNumPlayers) {
@@ -256,7 +258,7 @@ function addplayer($playerID, $currNumPlayers) {
 		}
 		xhttp.open("POST", "addplayer.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?>);
+		xhttp.send("playerid=" + $playerID + "&numplayers=" + $currNumPlayers + "&teamnum=" + <?php echo "$teamnum"; ?> + "&leaguenum=" + <?php echo $leaguenum; ?>);
 
 		
 	} else {
@@ -481,21 +483,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php
 $result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
 if(mysqli_num_rows($result) == ($capacity * 7)) {
-?>
-<input class="TeamButtons" type="button" value="Add Players" onclick="playersDiv()" />
-<a>  </a>
-<?php
+	?>
+	<input class="TeamButtons" type="button" value="Add Players" onclick="playersDiv()" />
+	<a>  </a>
+	<?php
 }
 ?>
 <input class="TeamButtons" type="button" value="Standings" onclick="standingsDiv()" />
 <a>  </a>
 <?php
-	$result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
-	if(mysqli_num_rows($result) == ($capacity * 7)) {
-?>
-<input class="TeamButtons" type="button" value="Matchup" onclick="scoreboardDiv()" />
-<a>  </a>
-<?php
+$result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
+if(mysqli_num_rows($result) == ($capacity * 7)) {
+	?>
+	<input class="TeamButtons" type="button" value="Matchup" onclick="scoreboardDiv()" />
+	<a>  </a>
+	<?php
 }
 ?>
 <input class="TeamButtons" type="button" value="Schedule" onclick="scheduleDiv()" />
@@ -503,14 +505,14 @@ if(mysqli_num_rows($result) == ($capacity * 7)) {
 <input class="TeamSettingsButton" type="button" value="Settings" onclick="settingsDiv()" />
 <a>  </a>
 <?php
-	$result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
-	if(mysqli_num_rows($result) != ($capacity * 7)) {
-if(((time()+(60*60*1)) > strtotime($drafttime)) && ($numteams == $capacity)) {
-	?>
-	<input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft()" />
-	<br>
-	<?php
-}
+$result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
+if(mysqli_num_rows($result) != ($capacity * 7)) {
+	if(((time()+(60*60*1)) > strtotime($drafttime)) && ($numteams == $capacity)) {
+		?>
+		<input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft()" />
+		<br>
+		<?php
+	}
 }
 ?>
 <element id="league" style="display: none">
@@ -1026,49 +1028,46 @@ if($numflex == 0) {
 				$totalwins++;
 			}
 		}
-		array_push($teamresult,(array($current, $totalwins)));
+		array_push($teamresult, $totalwins);
 	}
 
 	$standings = array();
 
 	$numteams = count($teams);
 
-	for($l = 0; $l<$numteams; $l++) {
+	for($i=0; $i<$numteams; $i++) {
 
-		$greatest = $teamresult[0][1];
+		$numteams = count($teams);
 
-		$greatestteamnum = $teamresult[0][0];
-
-		if(count($teamresult) != 1) {
-			for($i = 1; $i<count($teams); $i++) {
-
-				if($teamresult[$i][1] > $greatest) {
-					$greatest = $teamresult[$i][1];
-					$greatestteamnum = $teamresult[$i][0];
-				}
-			}
+		$most = 0;
+		if($teamresult[$i] < $most) {
+			$most = $i;
 		}
 
 
-		array_push($standings, $greatestteamnum);
+
+		$standings[$i] = $teams[$i];
 
 
-		$cop = array();
-		if(count($teamresult) != 1) {
-			for($q=0; $q<count($teams); $q++) {
-				if($q != $greatest) {
-					array_push($cop, $teamresult[$q]);
-				}
-			}
-		}
+		$copTeams = $teams;
+		$copResults = $teamresult;
 
 
+		$teams = array();
 		$teamresult = array();
-
-		for($q=0; $q<count($cop); $q++) {
-			array_push($teamresult, $cop[$q]);
+		for($l=0; $l<$numteams; $l++) {
+			if($l == $most) {
+				
+			} else {
+				array_push($teams,$copTeams[$l]);
+				array_push($teamresult, $copResults[$l]);
+			}
 		}
+
+		$teams = $copTeams;
+		$teamresult = $copResults;
 	}
+
 	?>
 
 	<table>
@@ -1109,6 +1108,19 @@ if($numflex == 0) {
 </div>
 
 <div id="scoreboard" style="display:none">
+	<?php 
+	if($addWeek == TRUE) {
+		$week++;
+		$addWeek = FALSE;
+		echo "Add Week";
+	}
+	if($subtractWeek == TRUE) {
+		$week--;
+		$subtractWeek = FALSE;
+		echo "Subtract Week";
+	}
+	?>
+	<h3><?php echo "Week: " . $week; ?></h3>
 	<br>
 	<?php
 	foreach($conn->query("SELECT * FROM schedule WHERE team='$teamnum' AND week='$week'") as $currentGame) {
@@ -1134,20 +1146,24 @@ if($numflex == 0) {
 			<th>Thursday</th>
 			<th>Friday</th>
 			<th>Saturday</th>
+			<th>Total</th>
 		</tr>
 
 		<tr>
 			<td><?php echo $teamname; ?></td>
 			<?php
-			for($i=1; $i<=7; $i++) {
+			$total = 0;
+			for($i=0; $i<7; $i++) {
 				?>
 				<td>
 					<?php
 					$day = ($i + 7 * $week);
 					$points = 0;
+					
 					$day = mysqli_real_escape_string($conn, $day);
 					foreach($conn->query("SELECT * FROM teamstats WHERE day='$day' AND team='$teamnum'") as $dailyscore) {
 						$points = $dailyscore['total'];
+						$total = $total + $points;
 					}
 					echo $points;
 					?>
@@ -1155,19 +1171,23 @@ if($numflex == 0) {
 				<?php
 			}
 			?>
+			<td><?php echo $total; ?></td>
 		</tr>
 		<tr>
 			<td><?php echo $otherteamname; ?></td>
 			<?php
-			for($i=1; $i<=7; $i++) {
+			$total = 0;
+			for($i=0; $i<7; $i++) {
 				?>
 				<td>
 					<?php
 					$day = ($i + 7 * $week);
 					$points = 0;
+					
 					$otherteam = mysqli_real_escape_string($conn, $otherteam);
 					foreach($conn->query("SELECT * FROM teamstats WHERE day='$day' AND team='$otherteam'") as $dailyscore) {
 						$points = $dailyscore['total'];
+						$total = $total + $points;
 					}
 					echo $points;
 					?>
@@ -1175,6 +1195,7 @@ if($numflex == 0) {
 				<?php
 			}
 			?>
+			<td><?php echo $total; ?></td>
 		</tr>
 	</table>
 
@@ -1214,10 +1235,10 @@ if($numflex == 0) {
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
 						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1239,10 +1260,10 @@ if($numflex == 0) {
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
 						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1277,10 +1298,10 @@ if($numflex == 0) {
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
 						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1302,10 +1323,10 @@ if($numflex == 0) {
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
 						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1335,10 +1356,10 @@ if($numflex == 0) {
 						$total = 0;
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1411,11 +1432,11 @@ if($numflex == 0) {
 						$pnum=$g['player'];
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
-					for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1437,11 +1458,11 @@ if($numflex == 0) {
 						$pnum=$g['player'];
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
-					for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1477,11 +1498,11 @@ if($numflex == 0) {
 						$pnum=$g['player'];
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
-					for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1503,11 +1524,11 @@ if($numflex == 0) {
 						$pnum=$g['player'];
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
-					for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1538,11 +1559,11 @@ if($numflex == 0) {
 						$pnum=$g['player'];
 						$pnum = mysqli_real_escape_string($conn, $pnum);
 						$total = 0;
-					for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
-						foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
-							$total = $total + $game['total'];
+						for($l=$firstdayofweek; $l<$lastdayofweek; $l++) {
+							foreach($conn->query("SELECT * FROM playerstats WHERE player='$pnum' AND day='$l'") as $game) {
+								$total = $total + $game['total'];
+							}
 						}
-					}
 						foreach($conn->query("SELECT * FROM players WHERE id='$pnum'") as $player) {
 							?>
 							<tr>
@@ -1578,7 +1599,6 @@ if($numflex == 0) {
 				}
 			}
 		}
-
 		?>
 	</table>
 </div>
