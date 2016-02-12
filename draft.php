@@ -25,6 +25,11 @@ foreach($conn->query("SELECT * FROM leagues WHERE id='$leaguenum'") as $lll) {
 	$commish = $lll['commissioner'];
 }
 
+$isCommish = 0;
+if($commish == $_SESSION['id']) {
+	$isCommish = 1;
+}
+
 
 $teams = array();
 foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $curr) {
@@ -63,6 +68,7 @@ if($totalplayers == count($order)) {
 	</script>
 	<?php
 }
+$lastpicktime = 0;
 if(time() < strtotime($drafttime)) {
 	$ontheclock = '';
 	$timeLeftOnClock = 1;
@@ -134,11 +140,12 @@ function draft($playerID) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			update_content();
 		}
 	}
 	xhttp.open("POST", "draftplayer.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("player=" + $playerID + "&team=" + <?php echo "$ontheclock"; ?> + "&league=" + <?php echo "$leaguenum"; ?>);	
+	xhttp.send("player=" + $playerID + "&team=" + <?php echo "$ontheclock"; ?> + "&league=" + <?php echo "$leaguenum"; ?> + "&time=" + <?php echo "$lastpicktime"; ?> + "&commish=" + <?php echo "$isCommish"; ?>);	
 }
 
 </script>
@@ -212,7 +219,6 @@ if($ontheclock == $teamnum) {
 				?>
 				<script>
 					draft(<?php echo $prospect['player']; ?>);
-
 				</script>	
 				<?php
 				$ontheclock++;
@@ -225,37 +231,73 @@ if($ontheclock == $teamnum) {
 <?php
 if($ontheclock == $teamnum) {
 	?>
-	<script type="text/javascript">
-		  setTimeout(function(){
-		    update_content();
-		  },10000)
-		</script>
-	<table width="50%" style="float: left; margin-left:2%;">
+		<table width="50%" style="float: left; margin-left:2%;">
 		<tr>
 			<th>Player Name</th>
 			<th>School</th>
 			<th>Position</th>
 			<th>Draft!</th>
 		</tr>
-		<?php
+	<?php
+		$playerNames = array();
+		$schoolNames = array();
+		$averagePoints = array();
+		$rankings = array();
+
+		foreach($conn->query("SELECT * FROM players") as $player) {
+			$id = $player["id"];
+			$name = $player["name"];
+			$school = $player['school'];
+
+			$total = 0;
+			$counter = 0;
+			foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
+				$total = $total + $statline['total'];
+				$counter++;
+			}
+			if($counter != 0) {
+				if($total != 0) {
+					$total = $total / $counter;
+					array_push($rankings, $id);
+					array_push($playerNames,$name);
+					array_push($schoolNames, $school);
+					array_push($averagePoints, $total);
+				}
+			}
+		}
+
+		array_multisort($averagePoints, SORT_DESC, $playerNames, $schoolNames, $rankings);
+
+		$players = array();
 		foreach($conn->query("SELECT * FROM joint where team='0' AND league=$leaguenum") as $current) {
 			$id = $current["player"];
-			$id = mysqli_real_escape_string($conn, $id);
-			foreach($conn->query("SELECT * FROM players where id=$id") as $player) {
-				?>
-				<tr>
-					<td><?php echo $player["name"]; ?></td>
-					<td><?php echo $player["school"]; ?></td>
-					<td><?php echo $player["position"]; ?></td>
-					<td>
-						<input class='dButton' type="button" value="Draft" onclick="draft(<?php echo $player['id']; ?>)" />
-					</td>
-				</tr>
-				<?php
-			}
-
+			$id=mysqli_real_escape_string($conn, $id);
+			array_push($players, $id); 
 		}
-		?>
+
+		for($r=0; $r<count($rankings); $r++) {
+
+			for($d=0; $d<count($players); $d++) {
+				if($players[$d] == $rankings[$r]) {
+
+					$playeridentification = $players[$d];
+
+					foreach($conn->query("SELECT * FROM players where id='$playeridentification'") as $player) {
+						?>
+						<tr>
+							<td><?php echo $player["name"]; ?></td>
+							<td><?php echo $player["school"]; ?></td>
+							<td><?php echo $player["position"]; ?></td>
+							<td>
+								<input class='dButton' type="button" value="Draft" onclick="draft(<?php echo $player['id']; ?>)" />
+							</td>
+						</tr>
+						<?php
+					}
+				}
+			}
+		}
+	?>
 	</table>
 	<?php
 } else {
@@ -272,27 +314,67 @@ if($ontheclock == $teamnum) {
 			<th>Position</th>
 			<th>Draft!</th>
 		</tr>
-		<?php
+			<?php
+		$playerNames = array();
+		$schoolNames = array();
+		$averagePoints = array();
+		$rankings = array();
+
+		foreach($conn->query("SELECT * FROM players") as $player) {
+			$id = $player["id"];
+			$name = $player["name"];
+			$school = $player['school'];
+
+			$total = 0;
+			$counter = 0;
+			foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
+				$total = $total + $statline['total'];
+				$counter++;
+			}
+			if($counter != 0) {
+				if($total != 0) {
+					$total = $total / $counter;
+					array_push($rankings, $id);
+					array_push($playerNames,$name);
+					array_push($schoolNames, $school);
+					array_push($averagePoints, $total);
+				}
+			}
+		}
+
+		array_multisort($averagePoints, SORT_DESC, $playerNames, $schoolNames, $rankings);
+
+		$players = array();
 		foreach($conn->query("SELECT * FROM joint where team='0' AND league=$leaguenum") as $current) {
 			$id = $current["player"];
-			$id = mysqli_real_escape_string($conn, $id);
-			foreach($conn->query("SELECT * FROM players where id=$id") as $player) {
-				?>
-				<tr>
-					<td><?php echo $player["name"]; ?></td>
-					<td><?php echo $player["school"]; ?></td>
-					<td><?php echo $player["position"]; ?></td>
-					<td>
-						<input type="button" value="--" onclick="" />
-					</td>
-				</tr>
-				<?php
-			}
-
+			$id=mysqli_real_escape_string($conn, $id);
+			array_push($players, $id); 
 		}
-		?>
-	</table>
 
+		for($r=0; $r<count($rankings); $r++) {
+
+			for($d=0; $d<count($players); $d++) {
+				if($players[$d] == $rankings[$r]) {
+
+					$playeridentification = $players[$d];
+
+					foreach($conn->query("SELECT * FROM players where id='$playeridentification'") as $player) {
+						?>
+						<tr>
+							<td><?php echo $player["name"]; ?></td>
+							<td><?php echo $player["school"]; ?></td>
+							<td><?php echo $player["position"]; ?></td>
+							<td>
+								<input type="button" value="--" onclick="" />
+							</td>
+						</tr>
+						<?php
+					}
+				}
+			}
+		}
+	?>
+	</table>
 	<?php
 }
 

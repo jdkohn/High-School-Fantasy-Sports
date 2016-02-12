@@ -6,6 +6,7 @@ $team = "";
 date_default_timezone_set('America/Los_Angeles');
 
 
+
 if($_SESSION["id"] == 7) {
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		if(!empty($_POST['week'])) {
@@ -125,6 +126,12 @@ if($_SESSION["id"] == 7) {
 
 			if($conn->query($addStatLine) == TRUE) {
 				echo "<br> Added stat line for player: " . $id . "<br>";
+				$team = $team;
+			?>
+			<script>
+			update_content();
+			</script>
+			<?php
 			}
 		}
 	}

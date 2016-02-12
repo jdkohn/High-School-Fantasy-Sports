@@ -35,22 +35,20 @@ $(document).ready(function(){
 //Needs work
   foreach ( $conn->query("SELECT * FROM teams where owner='$_SESSION[id]'") as $row ) {
     $leaguenum = $row['league'];
-    foreach ($conn->query("SELECT * FROM leagues where id=$row[league]") as $f ) {
+    foreach ($conn->query("SELECT * FROM leagues where id='$row[league]'") as $f ) {
 
       $teamname='';
-      $team = $row['id'];
-      $league = $row['league'];
 
-      $teamnum = $team;
+      $leaguenum = $f['id'];
+      $teamnum = $row['id'];
+
+      $team = mysqli_real_escape_string($conn, $teamnum);
+      $league = mysqli_real_escape_string($conn, $leaguenum);
 
       $teams = array();
 
-      $totalteams = 0;
-
-      $league = mysqli_real_escape_string($conn, $league);
       foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $uno) {
         array_push($teams, $uno['id']);
-        $totalteams++;
       }
 
       $teamresult = array();
@@ -64,51 +62,14 @@ $(document).ready(function(){
             $totalwins++;
           }
         }
-        array_push($teamresult,(array($current, $totalwins)));
+        array_push($teamresult, $totalwins);
       }
 
-      $standings = array();
-
-      for($l = 0; $l<$totalteams; $l++) {
-
-        $greatest = $teamresult[0][1];
-
-        $greatestteamnum = $teamresult[0][0];
-
-        if(count($teamresult) != 1) {
-          for($i = 1; $i<count($teams); $i++) {
-
-            if($teamresult[$i][1] > $greatest) {
-              $greatest = $teamresult[$i][1];
-              $greatestteamnum = $teamresult[$i][0];
-            }
-          }
-        }
-
-
-        array_push($standings, $greatestteamnum);
-
-
-        $cop = array();
-        if(count($teamresult) != 1) {
-          for($q=0; $q<count($teams); $q++) {
-            if($q != $greatest) {
-              array_push($cop, $teamresult[$q]);
-            }
-          }
-        }
-
-
-        $teamresult = array();
-
-        for($q=0; $q<count($cop); $q++) {
-          array_push($teamresult, $cop[$q]);
-        }
-      }
+      array_multisort($teamresult, SORT_DESC, $teams);
 
       $currentPosition = 0;
-      for($i=0;$i<count($standings);$i++) {
-        if($standings[$i] == $team) {
+      for($i=0;$i<count($teams);$i++) {
+        if($teams[$i] == $team) {
           $currentPosition = $i + 1;
           break;
         }
@@ -128,7 +89,7 @@ $(document).ready(function(){
           $result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
           if(mysqli_num_rows($result) != ($f["numteams"] * 7)) {
 
-            if(((time()+(60*60*1)) > $drafttime) && ($totalteams == $f["numteams"])) {
+            if(((time()+(60*60*1)) > $drafttime) && ($numteams == $f["numteams"])) {
               ?>
               <input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft(<?php echo $teamnum; ?>)" />
               <br>
@@ -152,10 +113,10 @@ $(document).ready(function(){
 
   ?>
 
-<script>
-function draft($teamnum) {
-  location.href = "draft.php?team=" + $teamnum;
-}
-</script>
+  <script>
+  function draft($teamnum) {
+    location.href = "draft.php?team=" + $teamnum;
+  }
+  </script>
 
   </html>

@@ -19,10 +19,19 @@ if ($result->num_rows > 0) {
          $_SESSION["firstname"] = $row["firstname"];
          $_SESSION["username"] = $row["username"];
          $_SESSION["id"] = $row["id"];
-         header( 'Location: home.php' ) ;
+         if(!empty($_POST['swift'])) {
+         	echo $row["id"];
+         } else {
+         	header( 'Location: home.php' ) ;
+     	}
      }
 } else {
-     header( 'Location: login.php');
+	if(!empty($_POST['swift'])) {
+         	echo "no";
+         } else {
+         	header( 'Location: login.php');
+     	}
+     
 }
 
 $conn->close();

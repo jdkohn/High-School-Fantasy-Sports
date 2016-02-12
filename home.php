@@ -29,7 +29,8 @@ if(isset($_SESSION["firstname"])) {
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 <a>		</a>
 <a href="news.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "News" /></a>
-
+<a>		</a>
+<a href="playerrankings.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Rankings" /></a>
 <br><br>
 <div align="center">
 <h2>iPhone App Coming Soon</h2>

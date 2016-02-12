@@ -35,6 +35,8 @@ if($day >=0) {
 <a href="joinleague.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Join League" /></a>
 <a>		</a>
 <a href="news.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "News" /></a>
+<a>		</a>
+<a href="playerrankings.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Rankings" /></a>
 <?php 
 if($_SESSION['id'] == 7) {
 ?>

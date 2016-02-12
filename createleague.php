@@ -178,7 +178,13 @@ $(document).ready(function(){
 		</select>
 		<span class="error">* <?php echo $numTeamsErr;?></span>
 		<br><br>
-		Draft date and time: <input type="datetime-local" name="drafttime">
+
+		<?php 
+		date_default_timezone_set('America/Los_Angeles');
+
+		?>
+
+		Draft date and time: <input type="datetime-local" name="drafttime" min="<?php echo date("Y-m-d H:i:s"); ?>">
 		<span class="error">* <?php echo $draftDateErr;?></span>
 		<br><br>Private:
 		Yes<input type="radio" name="private" value="yes"><a>	</a>No

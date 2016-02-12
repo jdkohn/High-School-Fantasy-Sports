@@ -133,7 +133,7 @@ form.blocktext {
 }
 
 input.TeamButtons {
-width: 100px;
+width: 120px;
 height: 30px;
 padding: 5px;
 font-weight: bold;
@@ -151,7 +151,7 @@ border: 1px solid black;
 }
 
 input.TeamSettingsButton {
-width: 100px;
+width: 120px;
 height: 30px;
 padding: 5px;
 font-weight: bold;
