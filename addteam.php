@@ -18,7 +18,7 @@ $password = mysqli_real_escape_string($conn, $password);
 
 if($password == "9q4fd6bppl04s") {
 
-	$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+	$addteam = "INSERT INTO teams (owner, name, league, sport) VALUES ('$owner', '$teamname', '$leaguenum', 'B')";
 
 } else {
 	$sql = "SELECT * FROM leagues WHERE id='$leaguenum'";
@@ -29,7 +29,7 @@ if($password == "9q4fd6bppl04s") {
 		 // output data of each row
 		while($row = $result->fetch_assoc()) {
 			if($password == $row["password"]) {
-				$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+				$addteam = "INSERT INTO teams (owner, name, league, sport) VALUES ('$owner', '$teamname', '$leaguenum', 'B')";
 			} else {
 				break;
 			}

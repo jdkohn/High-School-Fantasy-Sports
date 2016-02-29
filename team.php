@@ -1108,9 +1108,9 @@ if($numflex == 0) {
 				}
 			}
 		}
-	?>
+		?>
 
-</table>
+	</table>
 </div>
 
 <div id="standings" style="display: none">
@@ -1729,8 +1729,8 @@ if($numflex == 0) {
 			<input id="dTime" type="datetime-local" name="drafttime" />
 			<input type="submit" value="Change" onclick="teamDiv()" />
 			<script>
-				var x = document.getElementById("dTime");
-				x.value=<?php echo $timeOfDraft; ?>;
+			var x = document.getElementById("dTime");
+			x.value=<?php echo $timeOfDraft; ?>;
 			</script>
 		</form>
 		<?php
@@ -1741,129 +1741,130 @@ if($numflex == 0) {
 			Change League Name:
 			<input type="text" name="leaguename" value="<?php echo $leaguename; ?>" />
 			<input type="submit" value="Change" onclick="teamDiv()" />
-			<?php
-		}
-		?>
-	</div>
-
-	<div id="drop" style="display: none"> 
-		<table>
-			<tr>
-				<th>Position</th>
-				<th>Player</th>
-				<th>School</th>
-				<th>Drop</th>
-			</tr>
-			<?php
-			foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND team='$teamnum'") as $pj) {
-				$playerid = $pj['player'];
-				$playerid = mysqli_real_escape_string($conn, $playerid);
-				foreach($conn->query("SELECT * FROM players WHERE id='$playerid'") as $player) {
-
-					$pos = $player['position'];
-					$name = $player['name'];
-					$school = $player['school'];
-					?>
-
-					<tr>
-						<td><?php echo $pos; ?></td>
-						<td><?php echo $name; ?></td>
-						<td><?php echo $school; ?></td>
-						<td><input class ='dButton' type='button' value='DROP' onclick='dropPlayer(<?php echo $playerid; ?>)' /></td>
-					</tr>
-					<?php
-				}
-			}
-
-			?>
-		</table>
-	</div>
-
-	<div id="rankings" style="display: none">
+		</form>
 		<?php
-		$averagePoints = array();
-		$rankings = array();
+	}
+	?>
+</div>
 
-		foreach($conn->query("SELECT * FROM players") as $player) {
-			$id = $player["id"];
-
-			$total = 0;
-			$counter = 0;
-			foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
-				$total = $total + $statline['total'];
-				$counter++;
-			}
-			if($counter != 0) {
-				if($total != 0) {
-					$total = $total / $counter;
-					array_push($rankings, $id);
-					array_push($averagePoints, $total);
-				}
-			}
-		}
-
-		array_multisort($averagePoints, SORT_DESC, $rankings);
-
-		?>
-
-		<br><br>
-		
-
+<div id="drop" style="display: none"> 
+	<table>
+		<tr>
+			<th>Position</th>
+			<th>Player</th>
+			<th>School</th>
+			<th>Drop</th>
+		</tr>
 		<?php
+		foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND team='$teamnum'") as $pj) {
+			$playerid = $pj['player'];
+			$playerid = mysqli_real_escape_string($conn, $playerid);
+			foreach($conn->query("SELECT * FROM players WHERE id='$playerid'") as $player) {
 
-		$teams = array();
-		$averageRanking = array();
-		foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $t) {
-			$tnum = $t["id"];
-			array_push($teams, $tnum);
-			$total = 0;
-			foreach($conn->query("SELECT * FROM joint WHERE team='$tnum'") as $p) {
-				$playerNum = $p['player'];
-
-				for($i=0; $i<count($rankings); $i++) {
-					if($playerNum == $rankings[$i]) {
-						$total = $total + $i;
-					}
-				}
-			}
-			if($total != 0) {
-				$total = $total / 7;
-			}
-			array_push($averageRanking, $total);
-		}
-
-		array_multisort($averageRanking, $teams);
-		?>
-
-		<table>
-			<tr>
-				<th>Team Rank</th>
-				<th>Team</th>
-				<th>Average Player Ranking</th>
-			</tr>
-			<?php
-			for($q=0; $q<count($averageRanking); $q++) {
+				$pos = $player['position'];
+				$name = $player['name'];
+				$school = $player['school'];
 				?>
+
 				<tr>
-					<td><?php echo $q + 1; ?></td>
-					<td>
-						<?php
-						$tnum = $teams[$q];
-						foreach($conn->query("SELECT * FROM teams WHERE id='$tnum'") as $ttt) {
-							echo $ttt['name'];
-						}
-						?>
-					</td>
-					<td><?php echo substr($averageRanking[$q],0,4); ?></td>
+					<td><?php echo $pos; ?></td>
+					<td><?php echo $name; ?></td>
+					<td><?php echo $school; ?></td>
+					<td><input class ='dButton' type='button' value='DROP' onclick='dropPlayer(<?php echo $playerid; ?>)' /></td>
 				</tr>
 				<?php
 			}
-			?>
-		</table>
-	</div>
+		}
 
+		?>
+	</table>
+</div>
 
+<div id="rankings" style="display: none">
+	<?php
+	$averagePoints = array();
+	$rankings = array();
+
+	foreach($conn->query("SELECT * FROM players") as $player) {
+		$id = $player["id"];
+
+		$total = 0;
+		$counter = 0;
+		foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
+			$total = $total + $statline['total'];
+			$counter++;
+		}
+		if($counter != 0) {
+			if($total != 0) {
+				$total = $total / $counter;
+				array_push($rankings, $id);
+				array_push($averagePoints, $total);
+			}
+		}
+	}
+
+	array_multisort($averagePoints, SORT_DESC, $rankings);
+
+	?>
+
+	<br><br>
+	
 
 	<?php
-	$conn->close();
+
+	$teams = array();
+	$averageRanking = array();
+	foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $t) {
+		$tnum = $t["id"];
+		array_push($teams, $tnum);
+		$total = 0;
+		foreach($conn->query("SELECT * FROM joint WHERE team='$tnum'") as $p) {
+			$playerNum = $p['player'];
+
+			for($i=0; $i<count($rankings); $i++) {
+				if($playerNum == $rankings[$i]) {
+					$total = $total + $i;
+				}
+			}
+		}
+		if($total != 0) {
+			$total = $total / 7;
+		}
+		array_push($averageRanking, $total);
+	}
+
+	array_multisort($averageRanking, $teams);
 	?>
+
+	<table>
+		<tr>
+			<th>Team Rank</th>
+			<th>Team</th>
+			<th>Average Player Ranking</th>
+		</tr>
+		<?php
+		for($q=0; $q<count($averageRanking); $q++) {
+			?>
+			<tr>
+				<td><?php echo $q + 1; ?></td>
+				<td>
+					<?php
+					$tnum = $teams[$q];
+					foreach($conn->query("SELECT * FROM teams WHERE id='$tnum'") as $ttt) {
+						echo $ttt['name'];
+					}
+					?>
+				</td>
+				<td><?php echo substr($averageRanking[$q],0,4); ?></td>
+			</tr>
+			<?php
+		}
+		?>
+	</table>
+</div>
+
+
+
+<?php
+$conn->close();
+?>

@@ -56,7 +56,7 @@ function addteam($leaguenum, $noPass) {
   include "createconnection.php";
 
 
-  foreach ( $conn->query("SELECT * FROM leagues") as $row ) {
+  foreach ( $conn->query("SELECT * FROM leagues WHERE sport = 'B'") as $row ) {
     $leaguenum=$row["id"];
     $leaguenum = mysqli_real_escape_string($conn, $leaguenum);
     $sssql = "SELECT * FROM teams WHERE league=$leaguenum";

@@ -74,12 +74,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$pass = mysqli_real_escape_string($conn, $pass);
 
 		if($passNeeded) {
-			$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, password)
-			VALUES ('$name', '$numTeams', '$commissioner', '$draftDate', '$pass')";
+			$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, password, sport)
+			VALUES ('$name', '$numTeams', '$commissioner', '$draftDate', '$pass', 'B')";
 		} else {
 
-			$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate)
-			VALUES ('$name', '$numTeams', '$commissioner', '$draftDate')";
+			$sql = "INSERT INTO leagues (leaguename, numteams, commissioner, draftdate, sport)
+			VALUES ('$name', '$numTeams', '$commissioner', '$draftDate', 'B')";
 		}
 
 		if ($conn->query($sql) == FALSE) {
@@ -111,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$row = $enteredleague->fetch_assoc();
 		$leaguenum = $row["id"];
 
-		$addteam = "INSERT INTO teams (owner, name, league) VALUES ('$owner', '$teamname', '$leaguenum')";
+		$addteam = "INSERT INTO teams (owner, name, league, sport) VALUES ('$owner', '$teamname', '$leaguenum', 'B')";
 
 		if ($conn->query($addteam) == FALSE) {
 			echo "Error: " . $sql . "<br>" . $conn->error;

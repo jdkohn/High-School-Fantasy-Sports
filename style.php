@@ -234,6 +234,39 @@ input.addButton:hover {
   border: 1px solid green;
 }
 
+input.appButton {
+  width: 140px;
+  height: 50px;
+  font-weight: bold;
+  font-size: 100%;
+  background: green;
+  color: white;
+  cursor: pointer;
+  border: 1px solid green;
+}
+input.appButton:hover {
+  color: green;
+  background: white;
+  border: 1px solid green;
+}
+input.toggle {
+width: 100px;
+padding: 5px;
+font-weight: bold;
+font-size: 75%;
+background: white;
+color: black;
+cursor: pointer;
+border: 1px solid #999999;
+border-radius: 10px;
+}
+input.toggle:hover {
+color: white;
+background: black;
+border: 1px solid #000033;
+}
+
+
 
 </style>
 </html>

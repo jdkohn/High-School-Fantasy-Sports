@@ -33,7 +33,7 @@ if(isset($_SESSION["firstname"])) {
 <a href="playerrankings.php" class="HeaderButtons"><input class="HeaderButtons" type="button" value = "Rankings" /></a>
 <br><br>
 <div align="center">
-<h2>iPhone App Coming Soon</h2>
+<a href="https://itunes.apple.com/us/app/seattle-metro-fantasy-sports/id1079516397?mt=8"><input class="appButton" type="submit" value="iPhone App" /></a>
 <br>
 <h2>High School Fantasy Baseball Coming This Spring<h2>
 </div>
