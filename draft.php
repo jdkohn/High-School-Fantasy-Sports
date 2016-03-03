@@ -30,7 +30,6 @@ if($commish == $_SESSION['id']) {
 	$isCommish = 1;
 }
 
-
 $teams = array();
 foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $curr) {
 	array_push($teams, $curr['id']);
@@ -53,7 +52,7 @@ for($i=0; $i<$numteams; $i++) {
 	array_push($order, $teams[$i]);
 }
 
-$picks = "SELECT * FROM draft WHERE league='$leaguenum'";
+$picks = "SELECT * FROM baseballdraft WHERE league='$leaguenum'";
 $result = $conn->query($picks);
 $numpicks=mysqli_num_rows($result);
 
@@ -79,7 +78,7 @@ if(time() < strtotime($drafttime)) {
 } else {
 	$ontheclock = $order[$numpicks];
 	$lastpicktime = '';
-	foreach($conn->query("SELECT * FROM draft WHERE league='$leaguenum'") as $ppp) {
+	foreach($conn->query("SELECT * FROM baseballdraft WHERE league='$leaguenum'") as $ppp) {
 		$lastpicktime = $ppp['time'];
 	}
 	$timeLeftOnClock = $lastpicktime - (time() - 60);
@@ -186,7 +185,7 @@ if($ontheclock == $teamnum) {
 
 	<?php
 	$counter = 1;
-	foreach($conn->query("SELECT * FROM draft WHERE league='$leaguenum'") as $pick) {
+	foreach($conn->query("SELECT * FROM baseballdraft WHERE league='$leaguenum'") as $pick) {
 		$team = $pick['team'];
 		$player= $pick['player'];
 
@@ -199,7 +198,7 @@ if($ontheclock == $teamnum) {
 		}
 
 		$player = mysqli_real_escape_string($conn, $player);
-		foreach($conn->query("SELECT * FROM players WHERE id='$player'") as $playerresult) {
+		foreach($conn->query("SELECT * FROM baseballplayers WHERE id='$player'") as $playerresult) {
 			$playername = $playerresult['name'];
 		}
 
@@ -251,7 +250,7 @@ if($ontheclock == $teamnum) {
 
 			$total = 0;
 			$counter = 0;
-			foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
+			foreach($conn->query("SELECT * FROM baseballstats WHERE player='$id'") as $statline) {
 				$total = $total + $statline['total'];
 				$counter++;
 			}
@@ -282,7 +281,7 @@ if($ontheclock == $teamnum) {
 
 					$playeridentification = $players[$d];
 
-					foreach($conn->query("SELECT * FROM players where id='$playeridentification'") as $player) {
+					foreach($conn->query("SELECT * FROM baseballplayers where id='$playeridentification'") as $player) {
 						?>
 						<tr>
 							<td><?php echo $player["name"]; ?></td>
@@ -320,7 +319,7 @@ if($ontheclock == $teamnum) {
 		$averagePoints = array();
 		$rankings = array();
 
-		foreach($conn->query("SELECT * FROM players") as $player) {
+		foreach($conn->query("SELECT * FROM baseballplayers") as $player) {
 			$id = $player["id"];
 			$name = $player["name"];
 			$school = $player['school'];
@@ -358,7 +357,7 @@ if($ontheclock == $teamnum) {
 
 					$playeridentification = $players[$d];
 
-					foreach($conn->query("SELECT * FROM players where id='$playeridentification'") as $player) {
+					foreach($conn->query("SELECT * FROM baseballplayers where id='$playeridentification'") as $player) {
 						?>
 						<tr>
 							<td><?php echo $player["name"]; ?></td>
@@ -391,7 +390,7 @@ if($ontheclock == $teamnum) {
 	foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum'") as $pick) {
 		$player= $pick['player'];
 		$player = mysqli_real_escape_string($conn, $player);
-		foreach($conn->query("SELECT * FROM players WHERE id='$player'") as $playerresult) {
+		foreach($conn->query("SELECT * FROM baseballplayers WHERE id='$player'") as $playerresult) {
 			$name = $playerresult['name'];
 			$position=$playerresult['position'];
 			$school=$playerresult['school'];

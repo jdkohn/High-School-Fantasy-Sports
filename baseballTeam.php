@@ -233,7 +233,7 @@ function powerRankingsDiv() {
 function update_content(){
 	$.ajax({
 		type: "GET",
-      url: "team.php?id=<?php echo $team; ?>", // post it back to itself - use relative path or consistent www. or non-www. to avoid cross domain security issues
+      url: "baseballTeam.php?id=<?php echo $team; ?>", // post it back to itself - use relative path or consistent www. or non-www. to avoid cross domain security issues
       cache: false, // be sure not to cache results
   })
 	.done(function( page_html ) {
@@ -244,12 +244,61 @@ function update_content(){
 }
 
 
-/* CODE FOR MOVING/DROPPINT*/
+/* CODE FOR DROPPING*/
 
 </script>
 
 
+<?php
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	if(isset($_POST["teamname"])) {
+		$newname=$_POST["teamname"];
+
+		$newname=mysqli_real_escape_string($conn, $newname);
+
+		$changename = "UPDATE teams SET name='$newname' WHERE id='$team'";
+		if ($conn->query($changename) == TRUE) {
+			?>
+			<script type="text/javascript">
+			update_content();
+			</script>
+			<?php
+
+		} else {
+			echo "Error: " . $changename . "<br>" . $conn->error;
+		}
+	} else if(isset($_POST["drafttime"])) {
+		$newtime=$_POST["drafttime"];
+
+		$changename = "UPDATE leagues SET draftdate='$newtime' WHERE id='$league'";
+		if ($conn->query($changename) == TRUE) {
+			?>
+			<script type="text/javascript">
+			update_content();
+			</script>
+			<?php
+		} else {
+			echo "Error: " . $changename . "<br>" . $conn->error;
+		}
+	} else if(isset($_POST["leaguename"])) {
+		$newname=$_POST["leaguename"];
+
+		$newname=mysqli_real_escape_string($conn, $newname);
+		$changename = "UPDATE leagues SET leaguename='$newname' WHERE id='$league'";
+		if ($conn->query($changename) == TRUE) {
+			?>
+			<script type="text/javascript">
+			update_content();
+			</script>
+			<?php
+		} else {
+			echo "Error: " . $changename . "<br>" . $conn->error;
+		}
+	} 
+}
+
+?>
 
 
 
@@ -397,101 +446,229 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 
 <div id="team" style="display:none">
 	<?php
-		$outfielders = array();
-		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='O'") as $p) {
-			array_push($outfielders, $p);
-		}
-		$infielders = array();
-		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='I'") as $p) {
-			array_push($infielders, $p);
-		}
-		$flex = array();
-		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='X'") as $p) {
-			array_push($flex, $p);
-		}
-		?>
-		<br>
+	$outfielders = array();
+	foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='O'") as $p) {
+		array_push($outfielders, $p);
+	}
+	$infielders = array();
+	foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='I'") as $p) {
+		array_push($infielders, $p);
+	}
+	$flex = array();
+	foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='X'") as $p) {
+		array_push($flex, $p);
+	}
+	?>
+	<br>
 
-		<table>
-			<tr>
-				<th>Position</th>
-				<th>Player</th>
-				<th>School</th>
-				<th>HPG</th>
-				<th>RBI PG</th>
-				<th>RPG</th>
-			</tr>
+	<table>
+		<tr>
+			<th>Position</th>
+			<th>Player</th>
+			<th>School</th>
+			<th>HPG</th>
+			<th>RBI PG</th>
+			<th>RPG</th>
+		</tr>
 
-			<?php
-				if(count($outfielders) == 0) {
-					?>
-						<tr>
-							<td>O</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-						</tr>
-						<tr>
-							<td>O</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-						</tr>
-					<?php
-				} else if(count($outfielders) == 1) {
-					?>
-					<tr>
-						<td>O</td>
-						<td><?php echo $outfielders[0]['name']; ?></td>
-						<td><?php echo $outfielders[0]['school']; ?></td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-					</tr>
-					<tr>
-						<td>O</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-					</tr>
-					<?php
-				} else {
-					?>
-					<tr>
-						<td>O</td>
-						<td><?php echo $outfielders[0]['name']; ?></td>
-						<td><?php echo $outfielders[0]['school']; ?></td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-					</tr>
-					<tr>
-						<td>O</td>
-						<td><?php echo $outfielders[0]['name']; ?></td>
-						<td><?php echo $outfielders[0]['school']; ?></td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-						<td>--</td>
-					</tr>
-					<?php
-				}
-
-
+		<?php
+		if(count($outfielders) == 0) {
 			?>
+			<tr>
+				<td>O</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>O</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else if(count($outfielders) == 1) {
+			?>
+			<tr>
+				<td>OF</td>
+				<td><?php echo $outfielders[0]['name']; ?></td>
+				<td><?php echo $outfielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>OF</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else {
+			?>
+			<tr>
+				<td>OF</td>
+				<td><?php echo $outfielders[0]['name']; ?></td>
+				<td><?php echo $outfielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>OF</td>
+				<td><?php echo $outfielders[0]['name']; ?></td>
+				<td><?php echo $outfielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		}
+		if(count($infielders) == 0) {
+			?>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else if(count($infielders) == 1) {
+			?>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[0]['name']; ?></td>
+				<td><?php echo $infielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else if(count($infielders) == 2) {
+			?>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[0]['name']; ?></td>
+				<td><?php echo $infielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[1]['name']; ?></td>
+				<td><?php echo $infielders[1]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else if(count($infielders) == 3) {
+			?>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[0]['name']; ?></td>
+				<td><?php echo $infielders[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[1]['name']; ?></td>
+				<td><?php echo $infielders[1]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<tr>
+				<td>IF/C</td>
+				<td><?php echo $infielders[2]['name']; ?></td>
+				<td><?php echo $infielders[2]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} 
+		if(count($flex) == 0) {
+			?>
+			<tr>
+				<td>FLEX</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		} else if(count($flex) == 1) {
+			?>
+			<tr>
+				<td>FLEX</td>
+				<td><?php echo $flex[0]['name']; ?></td>
+				<td><?php echo $flex[0]['school']; ?></td>
+				<td>--</td>
+				<td>--</td>
+				<td>--</td>
+			</tr>
+			<?php
+		}
 
-		</table>
+
+		?>
+
+	</table>
 	
 </div>
 
@@ -548,7 +725,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 
 					$playeridentification = $players[$d];
 
-					foreach($conn->query("SELECT * FROM players where id='$playeridentification'") as $player) {
+					foreach($conn->query("SELECT * FROM baseballplayers where id='$playeridentification'") as $player) {
 						?>
 						<tr>
 							<td><?php echo $player["name"]; ?></td>
@@ -680,6 +857,10 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 	</table>
 </div>
 
+<div id="drop" style="display: none">
+
+</div>
+
 <!-- Settings -->
 
 <div id="settings" style="display: none">
@@ -693,7 +874,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 		<input type="submit" value="Change" onclick="teamDiv()" />
 	</form>
 	<?php
-	$result=$conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND team!='0'");
+	$result=$conn->query("SELECT * FROM joint WHERE league='$league' AND team!='0'");
 	$numDrafted = mysqli_num_rows($result);
 
 
@@ -703,10 +884,6 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			Change Draft Time: 
 			<input id="dTime" type="datetime-local" name="drafttime" />
 			<input type="submit" value="Change" onclick="teamDiv()" />
-			<script>
-			var x = document.getElementById("dTime");
-			x.value=<?php echo $timeOfDraft; ?>;
-			</script>
 		</form>
 		<?php
 	}
@@ -716,10 +893,10 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			Change League Name:
 			<input type="text" name="leaguename" value="<?php echo $leaguename; ?>" />
 			<input type="submit" value="Change" onclick="teamDiv()" />
-			<?php
-		}
-		?>
-	</div>
+		<?php
+	}
+	?>
+</div>
 
 
 	<!-- Rankings -->
@@ -758,7 +935,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 
 		$teams = array();
 		$averageRanking = array();
-		foreach($conn->query("SELECT * FROM teams WHERE league='$leaguenum'") as $t) {
+		foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $t) {
 			$tnum = $t["id"];
 			array_push($teams, $tnum);
 			$total = 0;
@@ -806,7 +983,3 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			?>
 		</table>
 	</div>
-
-
-
-
