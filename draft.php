@@ -48,9 +48,6 @@ for($l=0; $l<3; $l++) {
 		array_push($order, $reverse[$i]);
 	}
 }
-for($i=0; $i<$numteams; $i++) {
-	array_push($order, $teams[$i]);
-}
 
 $picks = "SELECT * FROM baseballdraft WHERE league='$leaguenum'";
 $result = $conn->query($picks);
@@ -63,7 +60,7 @@ $totalplayers = mysqli_num_rows($result);
 if($totalplayers == count($order)) {
 	?>
 	<script>
-		window.location ="team.php?id=" + <?php echo $teamnum; ?>;
+		window.location ="baseballTeam.php?id=" + <?php echo $teamnum; ?>;
 	</script>
 	<?php
 }
@@ -82,8 +79,27 @@ if(time() < strtotime($drafttime)) {
 		$lastpicktime = $ppp['time'];
 	}
 	$timeLeftOnClock = $lastpicktime - (time() - 60);
+
+
+
+
+
 }
 
+$numOutfielders = 0;
+$numInfielders = 0;
+$numFlex = 0;
+foreach($conn->query("SELECT * FROM joint WHERE team='$teamnum'") as $pp) {
+	if($pp["currentPos"] == 'O') {
+		$numOutfielders++;
+	}
+	if($pp["currentPos"] == 'I') {
+		$numInfielders++;
+	}
+	if($pp["currentPos"] == 'X') {
+		$numFlex++;
+	}
+}
 
 
 $OTCName = '';
@@ -156,12 +172,38 @@ function draft($playerID) {
 		<?php
 		if(time() < strtotime($drafttime)) {
 			?>
-			<td> <?php echo "Time To Draft: " . $ttdnice; ?></td>
+			<div id="clock">
+				<td> <?php echo "Time To Draft: " . $ttdnice; ?></td>
+			</div>
 			<?php
 		} else {
 			?>
 				<td><?php echo "On The Clock: " . $OTCName; ?></td>
-				<td><?php echo $timeLeftOnClock; ?></td>
+				<td><?php 
+
+				if($ontheclock == $teamnum) {
+					?>
+						<script>	
+							var newElement = document.createElement("p");
+							newElement.innerHTML = "59";
+							var id;
+							var counter = 60;
+
+							downloadButton.parentNode.replaceChild(newElement, downloadButton);
+
+							id = setInterval(function() {
+							    counter--;
+							    if(counter < 0) {
+							    } else {
+							        newElement.innerHTML = counter.toString();
+							    }
+							}, 1000);
+						</script>
+					<?php
+				} else {
+					echo $timeLeftOnClock; 
+				}
+				?></td>
 			<?php
 		}
 		?>
@@ -243,25 +285,17 @@ if($ontheclock == $teamnum) {
 		$averagePoints = array();
 		$rankings = array();
 
-		foreach($conn->query("SELECT * FROM players") as $player) {
-			$id = $player["id"];
-			$name = $player["name"];
-			$school = $player['school'];
-
-			$total = 0;
-			$counter = 0;
-			foreach($conn->query("SELECT * FROM baseballstats WHERE player='$id'") as $statline) {
-				$total = $total + $statline['total'];
-				$counter++;
+		if($numFlex == 0) {
+			foreach($conn->query("SELECT * FROM baseballplayers") as $player) {
+				include "getPlayersLoop.php";
 			}
-			if($counter != 0) {
-				if($total != 0) {
-					$total = $total / $counter;
-					array_push($rankings, $id);
-					array_push($playerNames,$name);
-					array_push($schoolNames, $school);
-					array_push($averagePoints, $total);
-				}
+		} else if($numOutfielders == 2) {
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE position='I'") as $player) {
+				include "getPlayersLoop.php";
+			}
+		} else if($numInfielders == 3) {
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE position='O'") as $player) {
+				include "getPlayersLoop.php";
 			}
 		}
 
@@ -319,31 +353,24 @@ if($ontheclock == $teamnum) {
 		$averagePoints = array();
 		$rankings = array();
 
-		foreach($conn->query("SELECT * FROM baseballplayers") as $player) {
-			$id = $player["id"];
-			$name = $player["name"];
-			$school = $player['school'];
-
-			$total = 0;
-			$counter = 0;
-			foreach($conn->query("SELECT * FROM playerstats WHERE player='$id'") as $statline) {
-				$total = $total + $statline['total'];
-				$counter++;
+		if($numFlex == 0) {
+			foreach($conn->query("SELECT * FROM baseballplayers") as $player) {
+				include "getPlayersLoop.php";
 			}
-			if($counter != 0) {
-				if($total != 0) {
-					$total = $total / $counter;
-					array_push($rankings, $id);
-					array_push($playerNames,$name);
-					array_push($schoolNames, $school);
-					array_push($averagePoints, $total);
-				}
+		} else if($numOutfielders == 2) {
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE position='I'") as $player) {
+				include "getPlayersLoop.php";
+			}
+		} else if($numInfielders == 3) {
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE position='O'") as $player) {
+				include "getPlayersLoop.php";
 			}
 		}
 
 		array_multisort($averagePoints, SORT_DESC, $playerNames, $schoolNames, $rankings);
 
 		$players = array();
+
 		foreach($conn->query("SELECT * FROM joint where team='0' AND league=$leaguenum") as $current) {
 			$id = $current["player"];
 			$id=mysqli_real_escape_string($conn, $id);
@@ -362,7 +389,15 @@ if($ontheclock == $teamnum) {
 						<tr>
 							<td><?php echo $player["name"]; ?></td>
 							<td><?php echo $player["school"]; ?></td>
-							<td><?php echo $player["position"]; ?></td>
+							<td><?php 
+
+							if($player["position"] == "O") {
+								echo "Outfield";
+							} else {
+								echo "Infield";
+							}
+							?>
+							</td>
 							<td>
 								<input type="button" value="--" onclick="" />
 							</td>

@@ -89,8 +89,8 @@ $(document).ready(function(){
           date_default_timezone_set('America/Los_Angeles');
           $drafttime = strtotime($f['draftdate']);
 
-          $result = $conn->query("SELECT * FROM draft WHERE league='$leaguenum'");
-          if(mysqli_num_rows($result) != ($f["numteams"] * 7)) {
+          $result = $conn->query("SELECT * FROM baseballdraft WHERE league='$leaguenum'");
+          if(mysqli_num_rows($result) != ($f["numteams"] * 6)) {
 
             if(((time()+(60*60*1)) > $drafttime) && ($numteams == $f["numteams"])) {
               ?>

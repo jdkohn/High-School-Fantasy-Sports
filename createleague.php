@@ -92,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$leaguenum = $c['id'];
 		}
 
-		foreach ($conn->query("SELECT * FROM players") as $player) {
+		foreach ($conn->query("SELECT * FROM baseballplayers") as $player) {
 			$playerID = $player["id"];
 			$addplayer = "INSERT INTO joint (league, player, currentPos, team) VALUES ('$leaguenum','$playerID', 'N', 0)";
 			if ($conn->query($addplayer) == TRUE) {

@@ -34,11 +34,9 @@ foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $t) {
 	$numteams++;
 }
 
-// $numDrafted = 0;
-// //get number of drafted players
-// foreach($conn->query("SELECT * FROM baseballdraft WHERE league='$league'") as $d) {
 
-// }
+
+
 
 ?>
 
@@ -49,6 +47,8 @@ foreach($conn->query("SELECT * FROM teams WHERE league='$league'") as $t) {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
+
+
 
 function leagueDiv() {
 
@@ -243,7 +243,6 @@ function update_content(){
 	});   
 }
 
-
 /* CODE FOR DROPPING*/
 
 </script>
@@ -338,8 +337,8 @@ if(mysqli_num_rows($result) == ($capacity * 7)) {
 <input class="TeamSettingsButton" type="button" value="Settings" onclick="settingsDiv()" />
 <a>  </a>
 <?php
-$result = $conn->query("SELECT * FROM draft WHERE league='$league'");
-if(mysqli_num_rows($result) != ($capacity * 7)) {
+$result = $conn->query("SELECT * FROM baseballdraft WHERE league='$league'");
+if(mysqli_num_rows($result) != ($capacity * 6)) {
 	if(((time()+(60*60*1)) > strtotime($drafttime)) && ($numteams == $capacity)) {
 		?>
 		<input class="dButton" type="submit" value="Draft" id="goToDraft" onclick="draft()" />
@@ -444,7 +443,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 
 </element>
 
-<div id="team" style="display:none">
+<div id="team">
 	<?php
 	$outfielders = array();
 	foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='O'") as $p) {
@@ -472,59 +471,37 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 		</tr>
 
 		<?php
-		if(count($outfielders) == 0) {
-			?>
-			<tr>
-				<td>O</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>O</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} else if(count($outfielders) == 1) {
-			?>
-			<tr>
-				<td>OF</td>
-				<td><?php echo $outfielders[0]['name']; ?></td>
-				<td><?php echo $outfielders[0]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>OF</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} else {
+
+		$countOut = 0;
+		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='O'") as $out) {
+			$countOut++;
+			$outID = $out["player"];
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE id='$outID'") as $p) {
+				?>
+				<tr>
+					<td>OF</td>
+					<td><?php echo $p['name']; ?></td>
+					<td><?php echo $p['school']; ?></td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+				<?php
+			}
+		}
+
+		$numBlankOut = 0;
+		if($countOut == 0) {
+			$numBlankOut = 2;
+		} else if($countOut == 1) {
+			$numBlankOut = 1;
+		}
+
+		for($i=0; $i<$numBlankOut; $i++) {
 			?>
 			<tr>
 				<td>OF</td>
-				<td><?php echo $outfielders[0]['name']; ?></td>
-				<td><?php echo $outfielders[0]['school']; ?></td>
 				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>OF</td>
-				<td><?php echo $outfielders[0]['name']; ?></td>
-				<td><?php echo $outfielders[0]['school']; ?></td>
 				<td>--</td>
 				<td>--</td>
 				<td>--</td>
@@ -532,7 +509,35 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			</tr>
 			<?php
 		}
-		if(count($infielders) == 0) {
+
+		$countIn = 0;
+		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='I'") as $in) {
+			$countIn++;
+			$inID = $in["player"];
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE id='$inID'") as $p) {
+				?>
+				<tr>
+					<td>IF/C</td>
+					<td><?php echo $p['name']; ?></td>
+					<td><?php echo $p['school']; ?></td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+				<?php
+			}
+		}
+
+		$numBlankIn = 0;
+		if($countIn == 0) {
+			$numBlankIn = 3;
+		} else if($countIn == 1) {
+			$numBlankIn = 2;
+		} else if($countIn == 2) {
+			$numBlankIn = 1;
+		}
+
+		for($i=0; $i<$numBlankIn; $i++) {
 			?>
 			<tr>
 				<td>IF/C</td>
@@ -542,122 +547,33 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 				<td>--</td>
 				<td>--</td>
 			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
 			<?php
-		} else if(count($infielders) == 1) {
-			?>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[0]['name']; ?></td>
-				<td><?php echo $infielders[0]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} else if(count($infielders) == 2) {
-			?>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[0]['name']; ?></td>
-				<td><?php echo $infielders[0]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[1]['name']; ?></td>
-				<td><?php echo $infielders[1]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} else if(count($infielders) == 3) {
-			?>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[0]['name']; ?></td>
-				<td><?php echo $infielders[0]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[1]['name']; ?></td>
-				<td><?php echo $infielders[1]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<tr>
-				<td>IF/C</td>
-				<td><?php echo $infielders[2]['name']; ?></td>
-				<td><?php echo $infielders[2]['school']; ?></td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} 
-		if(count($flex) == 0) {
+		}
+
+		$countFlex = 0;
+		foreach($conn->query("SELECT * FROM joint WHERE team='$team' AND currentPos='X'") as $flex) {
+			$countFlex++;
+			$flexID = $flex["player"];
+			foreach($conn->query("SELECT * FROM baseballplayers WHERE id='$flexID'") as $p) {
+				?>
+				<tr>
+					<td>FLEX</td>
+					<td><?php echo $p['name']; ?></td>
+					<td><?php echo $p['school']; ?></td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+				<?php
+			}
+		}
+
+		if($countFlex == 0) {
 			?>
 			<tr>
 				<td>FLEX</td>
 				<td>--</td>
 				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-				<td>--</td>
-			</tr>
-			<?php
-		} else if(count($flex) == 1) {
-			?>
-			<tr>
-				<td>FLEX</td>
-				<td><?php echo $flex[0]['name']; ?></td>
-				<td><?php echo $flex[0]['school']; ?></td>
 				<td>--</td>
 				<td>--</td>
 				<td>--</td>
@@ -672,7 +588,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 	
 </div>
 
-<div id="players" style="diaplay:none">
+<div id="players" style="display: none">
 	<br>
 	<table>
 		<tr>
@@ -741,14 +657,12 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			}
 		}
 		?>
-
 	</table>
-
 </div>
 
 
 
-<div id="standings" style="display:none">
+<div id="standings" style="display: none">
 	<br>
 	<?php
 
@@ -819,7 +733,7 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 </div>
 
 
-<div id="scoreboard" style="display:none">
+<div id="scoreboard" style="display: none">
 
 </div>
 
@@ -893,10 +807,10 @@ if(mysqli_num_rows($result) != ($capacity * 7)) {
 			Change League Name:
 			<input type="text" name="leaguename" value="<?php echo $leaguename; ?>" />
 			<input type="submit" value="Change" onclick="teamDiv()" />
-		<?php
-	}
-	?>
-</div>
+			<?php
+		}
+		?>
+	</div>
 
 
 	<!-- Rankings -->
