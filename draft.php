@@ -79,11 +79,6 @@ if(time() < strtotime($drafttime)) {
 		$lastpicktime = $ppp['time'];
 	}
 	$timeLeftOnClock = $lastpicktime - (time() - 60);
-
-
-
-
-
 }
 
 $numOutfielders = 0;
@@ -128,6 +123,12 @@ if($seconds<10) {
 	$ttdnice = $ttdnice . $seconds;
 }
 
+$autopick = 0;
+foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND currentPos='N'") as $prospect) {
+	$autopick = $prospect['player'];
+	break;
+}
+echo $autopick;
 ?>
 
 <head>
@@ -163,6 +164,26 @@ function draft($playerID) {
 	xhttp.send("player=" + $playerID + "&team=" + <?php echo "$ontheclock"; ?> + "&league=" + <?php echo "$leaguenum"; ?> + "&time=" + <?php echo "$lastpicktime"; ?> + "&commish=" + <?php echo "$isCommish"; ?>);	
 }
 
+function startTimer() {
+	var str = document.getElementById("clock");
+	var counter = 60;
+	var newElement = document.createElement("p");
+	newElement.innerHTML = "60";
+	var id;
+
+	str.parentNode.replaceChild(newElement, str);
+
+	id = setInterval(function() {
+	counter--;
+	if(counter < 0) {
+
+	} else {
+	    newElement.innerHTML = counter.toString();
+	    newElement.parentNode.replaceChild(newElement, newElement);
+	}
+	}, 1000);
+}
+
 </script>
 
 <br><br>
@@ -183,22 +204,7 @@ function draft($playerID) {
 
 				if($ontheclock == $teamnum) {
 					?>
-						<script>	
-							var newElement = document.createElement("p");
-							newElement.innerHTML = "59";
-							var id;
-							var counter = 60;
-
-							downloadButton.parentNode.replaceChild(newElement, downloadButton);
-
-							id = setInterval(function() {
-							    counter--;
-							    if(counter < 0) {
-							    } else {
-							        newElement.innerHTML = counter.toString();
-							    }
-							}, 1000);
-						</script>
+						<a id="clock">60</a>
 					<?php
 				} else {
 					echo $timeLeftOnClock; 
@@ -216,6 +222,9 @@ function draft($playerID) {
 if($ontheclock == $teamnum) {
 ?>
 	<h3 align="center">Patience is a virtue! Click "Draft" button only once!</h3>
+	<script>
+		startTimer();
+	</script>
 <?php 
 }
 ?>
@@ -254,17 +263,15 @@ if($ontheclock == $teamnum) {
 	}
 
 
+	//AUTOPICK
 
 	if(($timeLeftOnClock <= 0) && ($commish == $_SESSION['id'])) {
-		foreach($conn->query("SELECT * FROM joint WHERE league='$leaguenum' AND currentPos='N'") as $prospect) {
-				?>
-				<script>
-					draft(<?php echo $prospect['player']; ?>);
-				</script>	
-				<?php
-				$ontheclock++;
-				break;
-			}
+		?>
+		<script>
+			draft(<?php echo $autopick; ?>);
+		</script>	
+		<?php
+		$ontheclock++;
 	}
 
 	?>
